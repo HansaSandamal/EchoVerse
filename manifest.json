@@ -4,6 +4,11 @@
   "description": "An intelligent audio diary that turns your spoken thoughts into structured, actionable insights for self-discovery.",
   "icons": [
     {
+      "src": "/assets/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
       "src": "/assets/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
