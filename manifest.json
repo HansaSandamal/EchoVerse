@@ -8,8 +8,35 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-home.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "Record your thoughts easily with voice or manual entry."
+    },
+    {
+      "src": "/assets/screenshot-progress.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "label": "Track your mood, sentiment, and progress over time."
+    }
+  ],
+  "categories": ["lifestyle", "health", "productivity"],
   "start_url": "/",
   "id": "/",
   "display": "standalone",
