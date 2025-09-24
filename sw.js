@@ -4,8 +4,6 @@ const ASSETS_TO_CACHE = [
   '/index.html',
   '/index.tsx',
   '/manifest.json',
-  '/assets/icon-192x192.png',
-  '/assets/icon-512x512.png',
   '/assets/icon.svg'
   // Add other critical assets here. Note that CDN assets are fetched from their own origins and are not included here.
 ];
