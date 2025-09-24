@@ -15,8 +15,26 @@
     }
   ],
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
   "scope": "/",
+  "orientation": "portrait-primary",
   "background_color": "#0F172A",
-  "theme_color": "#1E293B"
+  "theme_color": "#1E293B",
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-mobile.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "EchoVerse Journaling Home"
+    },
+    {
+      "src": "/assets/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "EchoVerse Progress and Insights"
+    }
+  ]
 }
