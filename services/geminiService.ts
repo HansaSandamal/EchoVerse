@@ -1,0 +1,121 @@
+import { GoogleGenAI, Type } from "@google/genai";
+import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types';
+
+if (!process.env.API_KEY) {
+  console.warn("API_KEY environment variable not set. AI features will be mocked.");
+}
+
+const ai = process.env.API_KEY ? new GoogleGenAI({ apiKey: process.env.API_KEY }) : null;
+
+const MOCK_ANALYSIS: AIAnalysisResult = {
+    detectedMood: DetectedMood.Neutral,
+    summary: "This is a mock summary of your journal entry. The AI would normally provide a concise overview of your thoughts here.",
+    sentiment: "Neutral",
+    rating: 5,
+    themes: ["mock", "testing"],
+};
+
+const MOCK_CONNECTIONS = "This is a mock insight. With Premium, the AI would analyze your recent entries and identify recurring themes, emotional patterns, or connections between topics to help you understand yourself better.";
+
+const analysisSchema = {
+    type: Type.OBJECT,
+    properties: {
+        detectedMood: {
+            type: Type.STRING,
+            description: "The primary mood detected from the text.",
+            enum: Object.values(DetectedMood),
+        },
+        summary: {
+            type: Type.STRING,
+            description: "A concise, one or two-sentence summary of the journal entry."
+        },
+        sentiment: {
+            type: Type.STRING,
+            description: "The overall sentiment of the text (e.g., 'Positive', 'Negative', 'Neutral', 'Mixed')."
+        },
+        rating: {
+            type: Type.NUMBER,
+            description: "A sentiment score from 1 (very negative) to 10 (very positive)."
+        },
+        themes: {
+            type: Type.ARRAY,
+            items: {
+                type: Type.STRING
+            },
+            description: "A list of 2-3 key themes or topics mentioned (e.g., 'Work', 'Family', 'Anxiety')."
+        }
+    },
+    required: ["detectedMood", "summary", "sentiment", "rating", "themes"]
+};
+
+export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisResult> => {
+    if (!ai || !note.trim()) {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        return MOCK_ANALYSIS;
+    }
+
+    try {
+        const prompt = `Analyze the following journal entry. Based on the text, provide the detected mood, a brief summary, the overall sentiment, a sentiment rating from 1 to 10, and a list of key themes.
+        Journal Entry: "${note}"`;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: analysisSchema,
+                temperature: 0.5,
+            }
+        });
+        
+        const jsonText = response.text.trim();
+        return JSON.parse(jsonText);
+
+    } catch (error) {
+        console.error("Error fetching AI analysis:", error);
+        return {
+            ...MOCK_ANALYSIS,
+            summary: "Sorry, I couldn't generate an analysis right now. Please try again later."
+        };
+    }
+};
+
+export const getAIConnections = async (history: JournalEntry[]): Promise<string> => {
+     if (!ai || history.length < 3) {
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        return MOCK_CONNECTIONS;
+    }
+    
+    try {
+        // Create a concise summary of the last 10 entries to send to the model
+        const historySummary = history.slice(-10).map(entry => 
+            `Date: ${entry.date.substring(0,10)}\nDetected Mood: ${entry.detectedMood}\nSummary: ${entry.summary}\nThemes: ${entry.themes.join(', ')}`
+        ).join('\n\n---\n\n');
+
+        const prompt = `
+            You are a compassionate self-reflection assistant. Analyze the following series of journal entries from a user. 
+            Identify one or two interesting patterns, recurring themes, or connections between their moods and the topics they discuss.
+            Present this insight in a gentle, supportive, and thoughtful way. Address the user directly ("You mentioned...", "I noticed that...").
+            Keep the insight concise (3-4 sentences).
+
+            Journal History:
+            ${historySummary}
+        `;
+        
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                temperature: 0.8,
+                topP: 1,
+                topK: 32,
+            }
+        });
+        
+        return response.text.trim();
+
+    } catch(error) {
+        console.error("Error fetching AI connections:", error);
+        return "Sorry, I couldn't generate your connection insights right now. Please try again in a bit.";
+    }
+}

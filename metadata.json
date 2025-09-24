@@ -1,0 +1,7 @@
+{
+  "name": "EchoVerse - AI Voice Journal",
+  "description": "An intelligent audio diary that turns your spoken thoughts into structured, actionable insights for self-discovery. Features AI-powered analysis, pattern detection, and a modern, voice-first interface.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
