@@ -6,7 +6,9 @@ const ASSETS_TO_CACHE = [
   '/manifest.json',
   '/assets/icon.svg',
   '/assets/icon-192x192.png',
-  '/assets/icon-512x512.png'
+  '/assets/icon-512x512.png',
+  '/assets/screenshot-mobile.png',
+  '/assets/screenshot-wide.png'
   // Add other critical assets here. Note that CDN assets are fetched from their own origins and are not included here.
 ];
 
