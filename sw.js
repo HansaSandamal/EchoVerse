@@ -4,7 +4,8 @@ const ASSETS_TO_CACHE = [
   '/index.html',
   '/manifest.json',
   '/assets/icon.svg',
-  '/assets/icon-192x192.png'
+  '/assets/icon-192x192.png',
+  '/assets/icon-512x512.png'
 ];
 
 // Install event: cache all core assets
