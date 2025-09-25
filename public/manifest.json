@@ -2,20 +2,57 @@
   "short_name": "EchoVerse",
   "name": "EchoVerse - AI Voice Journal",
   "description": "An intelligent audio diary that turns your spoken thoughts into structured, actionable insights for self-discovery.",
+  "lang": "en-US",
+  "dir": "ltr",
   "icons": [
     {
       "src": "/assets/icon.svg",
       "sizes": "192x192 512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/assets/screenshot-home.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Record your voice or log your mood"
+    },
+    {
+      "src": "/assets/screenshot-progress.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Track your progress and sentiment over time"
+    },
+    {
+      "src": "/assets/screenshot-insights.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Get AI-powered insights and connections"
     }
   ],
   "categories": ["lifestyle", "health", "productivity"],
   "start_url": "/",
   "id": "/",
   "display": "standalone",
+  "display_override": ["standalone"],
   "scope": "/",
   "orientation": "portrait-primary",
   "background_color": "#0F172A",
-  "theme_color": "#1E293B"
+  "theme_color": "#1E293B",
+  "prefer_related_applications": false
 }
