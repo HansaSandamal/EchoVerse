@@ -4,8 +4,8 @@ const ASSETS_TO_CACHE = [
   '/index.html',
   '/index.tsx',
   '/manifest.json',
-  '/assets/icon-192.png',
-  '/assets/icon-512.png',
+  '/assets/icon-192x192.png',
+  '/assets/icon-512x512.png',
   '/assets/screenshot-home.png',
   '/assets/screenshot-progress.png',
   '/assets/screenshot-insights.png'
