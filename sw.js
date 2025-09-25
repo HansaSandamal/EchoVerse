@@ -4,7 +4,6 @@ const ASSETS_TO_CACHE = [
   '/index.html',
   '/index.tsx',
   '/manifest.json',
-  '/assets/icon.svg',
   '/assets/icon-192.png',
   '/assets/icon-512.png',
   '/assets/screenshot-home.png',
