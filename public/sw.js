@@ -16,8 +16,7 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        // Note: Caching index.tsx is unusual. Typically you'd cache the compiled JS file.
-        // I am keeping your original list but adding a filter for successful fetches.
+        // Adding a filter for successful fetches to make caching more robust.
         const cachePromises = ASSETS_TO_CACHE.map(assetUrl => {
             return fetch(assetUrl)
                 .then(response => {

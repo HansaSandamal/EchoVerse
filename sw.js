@@ -2,7 +2,6 @@ const CACHE_NAME = 'echoverse-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/index.tsx',
   '/manifest.json',
   '/assets/icon-192x192.png',
   '/assets/icon-512x512.png',
