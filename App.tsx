@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { Screen, JournalEntry, ColorTheme, ThemeMode } from './types';
 import LoginScreen from './components/screens/LoginScreen';
@@ -11,8 +10,8 @@ import PremiumModal from './components/shared/PremiumModal';
 import ConfirmationModal from './components/shared/ConfirmationModal';
 import { NAV_ITEMS } from './constants';
 // Fix: Use named imports from date-fns to resolve module resolution errors.
-// Fix: Replaced `parse` with `parseISO` to correctly parse ISO date strings.
-import { isToday, isYesterday, differenceInCalendarDays, parseISO } from 'date-fns';
+// Fix: Removed `parseISO` import as it's not available in the project's version of date-fns.
+import { isToday, isYesterday, differenceInCalendarDays } from 'date-fns';
 
 // Custom hook for persisting state to localStorage
 const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
@@ -125,17 +124,17 @@ const App: React.FC = () => {
             return 0;
         }
 
-        // Fix: Replaced `parse` with `parseISO` to correctly parse ISO date strings.
-        const lastEntryDate = parseISO(uniqueDays[0]);
+        // Fix: Replaced `parseISO` with `new Date()`. Appending 'T00:00:00' ensures date-only strings are parsed in local time, not UTC.
+        const lastEntryDate = new Date(uniqueDays[0] + 'T00:00:00');
         if (!isToday(lastEntryDate) && !isYesterday(lastEntryDate)) {
             return 0; // Streak broken
         }
 
         let currentStreak = 1;
         for (let i = 1; i < uniqueDays.length; i++) {
-            // Fix: Replaced `parse` with `parseISO` to correctly parse ISO date strings.
-            const currentDate = parseISO(uniqueDays[i-1]);
-            const previousDate = parseISO(uniqueDays[i]);
+            // Fix: Replaced `parseISO` with `new Date()`. Appending 'T00:00:00' ensures date-only strings are parsed in local time, not UTC.
+            const currentDate = new Date(uniqueDays[i-1] + 'T00:00:00');
+            const previousDate = new Date(uniqueDays[i] + 'T00:00:00');
             if (differenceInCalendarDays(currentDate, previousDate) === 1) {
                 currentStreak++;
             } else {

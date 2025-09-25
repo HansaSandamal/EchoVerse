@@ -3,8 +3,8 @@ import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { JournalEntry } from '../../types';
 // Fix: Use named imports from date-fns to resolve module resolution errors.
-// Fix: Replaced `parse` with `parseISO` to correctly parse ISO date strings.
-import { format, parseISO } from 'date-fns';
+// Fix: Removed `parseISO` import as it's not available in the project's version of date-fns.
+import { format } from 'date-fns';
 
 interface ProgressChartProps {
     data: JournalEntry[];
@@ -15,8 +15,8 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
     const originalDateISO = payload[0].payload.date;
     return (
       <div className="p-3 bg-content-light dark:bg-content-dark border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg">
-        {/* Fix: Replaced `parse` with `parseISO` to correctly parse ISO date strings. */}
-        <p className="label font-semibold text-text-primary-light dark:text-text-primary-dark">{`${format(parseISO(originalDateISO), 'MMM d, yyyy')}`}</p>
+        {/* Fix: Replaced `parseISO` with `new Date()` to correctly parse ISO date strings. */}
+        <p className="label font-semibold text-text-primary-light dark:text-text-primary-dark">{`${format(new Date(originalDateISO), 'MMM d, yyyy')}`}</p>
         <p className="intro text-accent-light dark:text-accent-dark">{`Sentiment Rating: ${payload[0].value}`}</p>
         <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">{`Mood: ${payload[0].payload.detectedMood}`}</p>
       </div>
@@ -30,8 +30,8 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ data }) => {
     const formattedData = data.map(entry => ({
         ...entry,
         date: entry.date, 
-        // Fix: Replaced `parse` with `parseISO` to correctly parse ISO date strings.
-        name: format(parseISO(entry.date), 'M/d'),
+        // Fix: Replaced `parseISO` with `new Date()` to correctly parse ISO date strings.
+        name: format(new Date(entry.date), 'M/d'),
     }));
     
     const themeColors = useMemo(() => {
