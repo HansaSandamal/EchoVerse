@@ -6,13 +6,13 @@
   "dir": "ltr",
   "icons": [
     {
-      "src": "/assets/icon-192x192.png",
+      "src": "assets/icon-192x192.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "/assets/icon-512x512.png",
+      "src": "assets/icon-512x512.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
@@ -20,21 +20,21 @@
   ],
   "screenshots": [
     {
-      "src": "/assets/screenshot-home.png",
+      "src": "assets/screenshot-home.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Record your voice or log your mood"
     },
     {
-      "src": "/assets/screenshot-progress.png",
+      "src": "assets/screenshot-progress.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Track your progress and sentiment over time"
     },
     {
-      "src": "/assets/screenshot-insights.png",
+      "src": "assets/screenshot-insights.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",

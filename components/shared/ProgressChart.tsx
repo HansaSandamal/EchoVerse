@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { JournalEntry } from '../../types';
-import { format, parseISO } from 'date-fns';
+// Fix: Corrected date-fns imports to use sub-paths, which can resolve module resolution issues.
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 
 interface ProgressChartProps {
     data: JournalEntry[];

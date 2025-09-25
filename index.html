@@ -6,14 +6,14 @@
     <title>EchoVerse - AI Voice Journal</title>
     
     <!-- PWA Manifest & Themeing -->
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0F172A">
     
     <!-- Apple PWA Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="EchoVerse">
-    <link rel="apple-touch-icon" href="/assets/icon-192x192.png">
+    <link rel="apple-touch-icon" href="assets/icon-192x192.png">
 
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -123,17 +123,18 @@
     </style>
     
     <script type="importmap">
-    {
-      "imports": {
-        "react": "https://aistudiocdn.com/react@^19.1.1",
-        "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
-        "react/": "https://aistudiocdn.com/react@^19.1.1/",
-        "date-fns": "https://aistudiocdn.com/date-fns@^4.1.0",
-        "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
-        "recharts": "https://aistudiocdn.com/recharts@^3.2.1"
-      }
-    }
-    </script>
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "date-fns": "https://aistudiocdn.com/date-fns@^4.1.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.2.1",
+    "date-fns/": "https://aistudiocdn.com/date-fns@^4.1.0/"
+  }
+}
+</script>
 </head>
 <body>
     <div id="root"></div>

@@ -9,7 +9,11 @@ import BottomNav from './components/shared/BottomNav';
 import PremiumModal from './components/shared/PremiumModal';
 import ConfirmationModal from './components/shared/ConfirmationModal';
 import { NAV_ITEMS } from './constants';
-import { isToday, isYesterday, differenceInCalendarDays, parseISO } from 'date-fns';
+// Fix: Corrected import for date-fns functions by using specific subpath imports.
+import isToday from 'date-fns/isToday';
+import isYesterday from 'date-fns/isYesterday';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
+import parseISO from 'date-fns/parseISO';
 
 // Custom hook for persisting state to localStorage
 const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {

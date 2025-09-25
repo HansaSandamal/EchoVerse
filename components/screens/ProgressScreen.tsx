@@ -3,7 +3,9 @@ import { JournalEntry, MoodOption } from '../../types';
 import ProgressChart from '../shared/ProgressChart';
 import StreakTracker from '../shared/StreakTracker';
 import AchievementsGrid from '../shared/AchievementsGrid';
-import { format, parseISO } from 'date-fns';
+// Fix: Corrected date-fns imports to use sub-paths, which can resolve module resolution issues.
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import { getAIConnections } from '../../services/geminiService';
 import { MOOD_OPTIONS } from '../../constants';
 
