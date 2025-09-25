@@ -16,7 +16,24 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(ASSETS_TO_CACHE);
+        // More robust caching that doesn't fail the whole installation
+        // if one asset is missing.
+        const cachePromises = ASSETS_TO_CACHE.map(assetUrl => {
+            return fetch(assetUrl)
+                .then(response => {
+                    if (response.ok) {
+                        return cache.put(assetUrl, response);
+                    }
+                    console.warn(`Skipping caching for ${assetUrl} - ${response.statusText}`);
+                    // Resolve even if it fails, so Promise.all doesn't reject.
+                    return Promise.resolve();
+                })
+                .catch(err => {
+                    console.warn(`Failed to fetch ${assetUrl} for caching.`, err);
+                    return Promise.resolve();
+                });
+        });
+        return Promise.all(cachePromises);
       })
   );
 });
