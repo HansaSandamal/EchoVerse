@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { Screen, JournalEntry, ColorTheme, ThemeMode } from './types';
 import LoginScreen from './components/screens/LoginScreen';
@@ -10,7 +11,8 @@ import PremiumModal from './components/shared/PremiumModal';
 import ConfirmationModal from './components/shared/ConfirmationModal';
 import { NAV_ITEMS } from './constants';
 // Fix: Use named imports from date-fns to resolve module resolution errors.
-import { isToday, isYesterday, differenceInCalendarDays, parseISO } from 'date-fns';
+// Fix: Replaced `parseISO` with `parse` to resolve module export error.
+import { isToday, isYesterday, differenceInCalendarDays, parse } from 'date-fns';
 
 // Custom hook for persisting state to localStorage
 const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
@@ -123,15 +125,17 @@ const App: React.FC = () => {
             return 0;
         }
 
-        const lastEntryDate = parseISO(uniqueDays[0]);
+        // Fix: Replaced `parseISO` with `parse` to resolve module export error.
+        const lastEntryDate = parse(uniqueDays[0]);
         if (!isToday(lastEntryDate) && !isYesterday(lastEntryDate)) {
             return 0; // Streak broken
         }
 
         let currentStreak = 1;
         for (let i = 1; i < uniqueDays.length; i++) {
-            const currentDate = parseISO(uniqueDays[i-1]);
-            const previousDate = parseISO(uniqueDays[i]);
+            // Fix: Replaced `parseISO` with `parse` to resolve module export error.
+            const currentDate = parse(uniqueDays[i-1]);
+            const previousDate = parse(uniqueDays[i]);
             if (differenceInCalendarDays(currentDate, previousDate) === 1) {
                 currentStreak++;
             } else {

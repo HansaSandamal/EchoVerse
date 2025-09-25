@@ -70,7 +70,7 @@ export const scheduleSmartReminders = ({ journalHistory, streak }: SmartReminder
     reminderTimeout = window.setTimeout(() => {
         showNotification("EchoVerse Daily Journal", {
             body: message,
-            icon: 'assets/icon-192x192.png' 
+            icon: '' 
         });
         // Schedule for next day
         scheduleSmartReminders({ journalHistory, streak });
@@ -83,7 +83,7 @@ export const testNotification = (): void => {
     console.log("Testing notification...");
     showNotification("EchoVerse Test Notification", {
         body: "This is how your daily reminder will look. Keep up the great work!",
-        icon: 'assets/icon-192x192.png'
+        icon: ''
     });
 };
 

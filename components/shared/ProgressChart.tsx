@@ -1,8 +1,10 @@
+
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { JournalEntry } from '../../types';
 // Fix: Use named imports from date-fns to resolve module resolution errors.
-import { format, parseISO } from 'date-fns';
+// Fix: Replaced `parseISO` with `parse` to resolve module export error.
+import { format, parse } from 'date-fns';
 
 interface ProgressChartProps {
     data: JournalEntry[];
@@ -13,7 +15,8 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
     const originalDateISO = payload[0].payload.date;
     return (
       <div className="p-3 bg-content-light dark:bg-content-dark border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg">
-        <p className="label font-semibold text-text-primary-light dark:text-text-primary-dark">{`${format(parseISO(originalDateISO), 'MMM d, yyyy')}`}</p>
+        {/* Fix: Replaced `parseISO` with `parse` to resolve module export error. */}
+        <p className="label font-semibold text-text-primary-light dark:text-text-primary-dark">{`${format(parse(originalDateISO), 'MMM d, yyyy')}`}</p>
         <p className="intro text-accent-light dark:text-accent-dark">{`Sentiment Rating: ${payload[0].value}`}</p>
         <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">{`Mood: ${payload[0].payload.detectedMood}`}</p>
       </div>
@@ -27,7 +30,8 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ data }) => {
     const formattedData = data.map(entry => ({
         ...entry,
         date: entry.date, 
-        name: format(parseISO(entry.date), 'M/d'),
+        // Fix: Replaced `parseISO` with `parse` to resolve module export error.
+        name: format(parse(entry.date), 'M/d'),
     }));
     
     const themeColors = useMemo(() => {
