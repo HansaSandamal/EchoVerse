@@ -2,9 +2,8 @@ const CACHE_NAME = 'echoverse-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/manifest.json',
-  '/assets/icon.svg',
-  '/assets/icon-192x192.png'
+  'manifest.json',
+  'assets/icon.svg'
 ];
 
 // Install event: cache all core assets
