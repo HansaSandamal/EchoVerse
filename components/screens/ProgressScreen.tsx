@@ -60,7 +60,7 @@ const ConnectionsCard: React.FC<{ history: JournalEntry[], isPremium: boolean, o
                     <p className="text-text-secondary-light dark:text-text-secondary-dark mb-4">
                         {isPremium ? "Generate a new AI insight that connects themes and moods from your recent entries." : "Unlock this feature with Premium to find deeper patterns in your journal."}
                     </p>
-                    <button onClick={handleGenerate} className="w-full py-2 px-4 bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-600 dark:to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:opacity-90 transition-opacity">
+                    <button onClick={handleGenerate} className="w-full py-2 px-4 bg-gradient-to-r from-purple-500 to-indigo-500 dark:from-purple-600 dark:to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:opacity-90 transition-opacity active:animate-button-press">
                        {isPremium ? 'Generate Insight' : '✨ Upgrade to Unlock'}
                     </button>
                 </>
@@ -91,7 +91,7 @@ const ProgressScreen: React.FC<ProgressScreenProps> = ({ journalHistory, streak,
         const colors = moodColorMap[entry.detectedMood] || moodColorMap['Neutral'];
 
         return (
-            <div className={`bg-content-light dark:bg-content-dark rounded-xl shadow-sm border-l-4 ${colors.border}`}>
+            <div className={`bg-content-light dark:bg-content-dark rounded-xl shadow-sm border-l-4 ${colors.border} transition-all duration-200 hover:shadow-md hover:scale-[1.02]`}>
                 <div className="p-4 space-y-3">
                     <div className="flex justify-between items-start">
                         <div className="flex items-center">
@@ -122,7 +122,7 @@ const ProgressScreen: React.FC<ProgressScreenProps> = ({ journalHistory, streak,
             <p className="font-semibold text-text-primary-light dark:text-text-primary-dark">{message}</p>
             <button
                 onClick={onUpgradeRequest}
-                className="mt-4 py-2 px-5 bg-accent-light dark:bg-accent-dark text-white font-semibold rounded-lg shadow-md hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover transition-all duration-200"
+                className="mt-4 py-2 px-5 bg-accent-light dark:bg-accent-dark text-white font-semibold rounded-lg shadow-md hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover transition-all duration-200 active:animate-button-press"
             >
                 Upgrade to Premium
             </button>
@@ -130,7 +130,7 @@ const ProgressScreen: React.FC<ProgressScreenProps> = ({ journalHistory, streak,
     );
 
     return (
-        <div className="space-y-8 animate-fade-in">
+        <div className="space-y-8 animate-fade-in-up">
             <div>
                 <h1 className="text-3xl font-bold text-text-primary-light dark:text-text-primary-dark">Your Progress</h1>
                 <p className="text-text-secondary-light dark:text-text-secondary-dark mt-1">Review your journey and celebrate your consistency.</p>

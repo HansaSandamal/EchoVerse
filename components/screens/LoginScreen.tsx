@@ -84,20 +84,20 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
         <div className="flex flex-col h-full text-center p-6 sm:p-8">
             <div className="flex-grow flex flex-col items-center justify-center">
                 <div className="mb-10">
-                    <div className="inline-block p-4 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full mb-4 shadow-lg animate-fade-in" style={{ animationDelay: '150ms' }}>
+                    <div className="inline-block p-4 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full mb-4 shadow-lg animate-fade-in-up" style={{ animationDelay: '150ms' }}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
                         </svg>
                     </div>
-                    <h1 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark animate-fade-in" style={{ animationDelay: '300ms' }}>
+                    <h1 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark animate-fade-in-up" style={{ animationDelay: '300ms' }}>
                         Welcome to <span className="text-accent-light dark:text-accent-dark">EchoVerse</span>
                     </h1>
-                    <p className="text-text-secondary-light dark:text-text-secondary-dark mt-2 max-w-md mx-auto animate-fade-in" style={{ animationDelay: '450ms' }}>
+                    <p className="text-text-secondary-light dark:text-text-secondary-dark mt-2 max-w-md mx-auto animate-fade-in-up" style={{ animationDelay: '450ms' }}>
                         Your personal AI voice journal for self-reflection and mental clarity.
                     </p>
                 </div>
                 
-                <div className="w-full max-w-xs space-y-3 animate-fade-in" style={{ animationDelay: '600ms' }}>
+                <div className="w-full max-w-xs space-y-3 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
                     {/* This div will be populated by the Google Sign-In button */}
                     <div id="googleSignInButton" className="flex justify-center items-center h-[44px] w-full rounded-lg bg-bkg-light dark:bg-content-dark border border-gray-300 dark:border-gray-600">
                         {/* Loading placeholder to prevent layout shift */}
@@ -114,7 +114,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                     */}
                     <button 
                         onClick={() => onLogin({ name: 'Casey Smith', email: 'casey.s@example.com', photoURL: 'https://i.pravatar.cc/150?u=casey' })}
-                        className="w-full h-[44px] px-4 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-lg shadow-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center"
+                        className="w-full h-[44px] px-4 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-lg shadow-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center active:animate-button-press"
                     >
                         <AppleIcon className="text-white dark:text-black" />
                         Continue with Apple
@@ -122,7 +122,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 </div>
             </div>
 
-            <footer className="w-full text-center text-xs text-text-secondary-light dark:text-text-secondary-dark animate-fade-in" style={{ animationDelay: '750ms' }}>
+            <footer className="w-full text-center text-xs text-text-secondary-light dark:text-text-secondary-dark animate-fade-in-up" style={{ animationDelay: '750ms' }}>
                 <p>By continuing, you agree to our Privacy Policy.</p>
             </footer>
         </div>

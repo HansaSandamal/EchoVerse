@@ -131,7 +131,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
         switch (entryMode) {
              case 'success':
                 return (
-                    <div className="flex flex-col items-center justify-center text-center animate-fade-in">
+                    <div className="flex flex-col items-center justify-center text-center animate-fade-in-up">
                         <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
                             <svg className="w-10 h-10 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                         </div>
@@ -143,12 +143,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
                 return (
                     <>
                         {!audioUrl ? (
-                            <div className="w-full flex flex-col items-center animate-fade-in">
+                            <div className="w-full flex flex-col items-center animate-fade-in-up">
                                 <ScreenHeader onBack={resetState} title="Record Voice Journal" />
                                 <VoiceRecorder onRecordingComplete={handleRecordingComplete} />
                             </div>
                         ) : (
-                            <div className="w-full flex flex-col items-center animate-fade-in">
+                            <div className="w-full flex flex-col items-center animate-fade-in-up">
                                  <h2 className="font-semibold text-lg mb-4 text-text-primary-light dark:text-text-primary-dark">Your New Echo</h2>
                                  <audio src={audioUrl} controls className="w-full mb-4 rounded-full" />
                                 <textarea
@@ -159,8 +159,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
                                     rows={5}
                                 />
                                 <div className="flex w-full space-x-3 mt-4">
-                                    <button onClick={resetState} disabled={isSaving} className="w-full py-3 px-4 bg-gray-500 dark:bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 dark:hover:bg-gray-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 transition-colors">Discard</button>
-                                    <button onClick={handleSaveVoiceJournal} disabled={isSaving} className="w-full py-3 px-4 bg-accent-light dark:bg-accent-dark text-white font-semibold rounded-lg shadow-md hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover disabled:bg-gray-500 disabled:cursor-wait flex items-center justify-center transition-colors">
+                                    <button onClick={resetState} disabled={isSaving} className="w-full py-3 px-4 bg-gray-500 dark:bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 dark:hover:bg-gray-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 transition-colors active:animate-button-press">Discard</button>
+                                    <button onClick={handleSaveVoiceJournal} disabled={isSaving} className="w-full py-3 px-4 bg-accent-light dark:bg-accent-dark text-white font-semibold rounded-lg shadow-md hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover disabled:bg-gray-500 disabled:cursor-wait flex items-center justify-center transition-colors active:animate-button-press">
                                         {isSaving ? 'Analyzing...' : "Save Journal"}
                                     </button>
                                 </div>
@@ -171,7 +171,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
 
             case 'manual':
                 return (
-                    <div className="w-full animate-fade-in space-y-4">
+                    <div className="w-full animate-fade-in-up space-y-4">
                         <ScreenHeader onBack={resetState} title="How are you feeling?" />
                         <MoodSelector selectedMood={selectedMood} setSelectedMood={setSelectedMood} rating={rating} setRating={setRating} />
                          <textarea
@@ -182,8 +182,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
                             rows={3}
                         />
                         <div className="flex w-full space-x-3 pt-2">
-                             <button onClick={resetState} disabled={isSaving} className="w-full py-3 px-4 bg-gray-500 dark:bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 dark:hover:bg-gray-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 transition-colors">Discard</button>
-                            <button onClick={handleSaveManualJournal} disabled={isSaving} className="w-full py-3 px-4 bg-accent-light dark:bg-accent-dark text-white font-semibold rounded-lg shadow-md hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover disabled:bg-gray-500 disabled:cursor-wait flex items-center justify-center transition-colors">
+                             <button onClick={resetState} disabled={isSaving} className="w-full py-3 px-4 bg-gray-500 dark:bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 dark:hover:bg-gray-500 disabled:bg-gray-400 dark:disabled:bg-gray-700 transition-colors active:animate-button-press">Discard</button>
+                            <button onClick={handleSaveManualJournal} disabled={isSaving} className="w-full py-3 px-4 bg-accent-light dark:bg-accent-dark text-white font-semibold rounded-lg shadow-md hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover disabled:bg-gray-500 disabled:cursor-wait flex items-center justify-center transition-colors active:animate-button-press">
                                 {isSaving ? 'Saving...' : "Save Mood"}
                             </button>
                         </div>
@@ -193,8 +193,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
             case 'choice':
             default:
                 return (
-                    <div className="w-full space-y-4 animate-fade-in">
-                        <button onClick={() => setEntryMode('voice')} className="w-full text-left p-6 bg-purple-500/10 hover:bg-purple-500/20 rounded-xl border-2 border-transparent hover:border-purple-400 transition-all duration-300 group">
+                    <div className="w-full space-y-4 animate-fade-in-up">
+                        <button onClick={() => setEntryMode('voice')} className="w-full text-left p-6 bg-purple-500/10 hover:bg-purple-500/20 rounded-xl border-2 border-transparent hover:border-purple-400 transition-all duration-300 group hover:shadow-xl hover:scale-[1.02]">
                             <div className="flex items-center">
                                 <div className="p-3 bg-purple-500/20 rounded-full mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-500 dark:text-purple-300" fill="currentColor" viewBox="0 0 16 16"><path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/><path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"/></svg>
@@ -206,7 +206,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-500 dark:text-purple-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
                             </div>
                         </button>
-                         <button onClick={() => setEntryMode('manual')} className="w-full text-left p-6 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-xl border-2 border-transparent hover:border-indigo-400 transition-all duration-300 group">
+                         <button onClick={() => setEntryMode('manual')} className="w-full text-left p-6 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-xl border-2 border-transparent hover:border-indigo-400 transition-all duration-300 group hover:shadow-xl hover:scale-[1.02]">
                             <div className="flex items-center">
                                 <div className="p-3 bg-indigo-500/20 rounded-full mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-500 dark:text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -227,8 +227,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
         <div className="space-y-8">
             <Greeting />
             
-            <div className="relative p-6 bg-content-light dark:bg-content-dark rounded-2xl shadow-lg min-h-[350px] flex flex-col justify-center items-center text-center">
-                {renderContent()}
+            <div className="relative p-6 bg-gradient-to-br from-content-light to-bkg-light dark:from-content-dark dark:to-bkg-dark rounded-2xl shadow-lg min-h-[350px] flex flex-col justify-center items-center text-center">
+                <div key={entryMode} className="w-full">
+                     {renderContent()}
+                </div>
             </div>
         </div>
     );

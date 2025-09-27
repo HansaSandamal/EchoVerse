@@ -118,7 +118,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
 
 
     return (
-        <div className="space-y-8 animate-fade-in">
+        <div className="space-y-8 animate-fade-in-up">
             <div>
                 <h1 className="text-3xl font-bold text-text-primary-light dark:text-text-primary-dark">Settings</h1>
                 <p className="text-text-secondary-light dark:text-text-secondary-dark mt-1">Manage your account and preferences.</p>
@@ -127,7 +127,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
             <div className="space-y-6">
                  {/* Profile Section */}
                  {currentUser && (
-                    <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl flex items-center space-x-4">
+                    <div className="p-4 bg-gradient-to-r from-content-light to-bkg-light dark:from-content-dark dark:to-bkg-dark rounded-xl flex items-center space-x-4">
                         <img src={currentUser.photoURL} alt="Profile" className="w-16 h-16 rounded-full" />
                         <div>
                             <h2 className="font-semibold text-xl text-text-primary-light dark:text-text-primary-dark">{currentUser.name}</h2>
@@ -145,7 +145,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                             <span className="text-sm text-text-secondary-light dark:text-text-secondary-dark">You have access to all features.</span>
                         </div>
                     ) : (
-                        <button onClick={onUpgradeRequest} className="w-full p-4 bg-accent-light dark:bg-accent-dark hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover rounded-lg text-white font-bold transition-colors">
+                        <button onClick={onUpgradeRequest} className="w-full p-4 bg-accent-light dark:bg-accent-dark hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover rounded-lg text-white font-bold transition-colors active:animate-button-press">
                             Upgrade to Premium
                         </button>
                     )}
@@ -191,23 +191,25 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 </div>
 
                 {/* About Section */}
-                <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl space-y-2">
-                    <h2 className="font-semibold text-lg mb-2 text-text-primary-light dark:text-text-primary-dark">About</h2>
-                    <button onClick={onViewPrivacy} className="w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md text-text-primary-light dark:text-text-primary-dark">Privacy Policy</button>
-                     <a href="mailto:support@echoverse.app" className="block w-full text-left p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md text-text-primary-light dark:text-text-primary-dark">Contact Support</a>
+                <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
+                    <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">About</h2>
+                    <div className="divide-y divide-gray-200 dark:divide-gray-700">
+                        <button onClick={onViewPrivacy} className="w-full text-left py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-md text-text-primary-light dark:text-text-primary-dark transition-colors">Privacy Policy</button>
+                         <a href="mailto:support@echoverse.app" className="block w-full text-left py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-md text-text-primary-light dark:text-text-primary-dark transition-colors">Contact Support</a>
+                    </div>
                 </div>
 
                 {/* Danger Zone */}
                  <div className="p-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl">
                     <h2 className="font-semibold text-lg mb-2 text-red-700 dark:text-red-300">Danger Zone</h2>
-                     <button onClick={onResetRequest} className="w-full p-3 bg-red-200 dark:bg-red-600/30 hover:bg-red-300 dark:hover:bg-red-600/50 text-red-800 dark:text-red-200 font-bold rounded-lg transition-colors">
+                     <button onClick={onResetRequest} className="w-full p-3 bg-red-200 dark:bg-red-600/30 hover:bg-red-300 dark:hover:bg-red-600/50 text-red-800 dark:text-red-200 font-bold rounded-lg transition-colors active:animate-button-press">
                         Reset All Data
                     </button>
                 </div>
 
                 {/* Log Out */}
                  <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
-                    <button onClick={onLogout} className="w-full p-3 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-text-primary-light dark:text-text-primary-dark font-bold rounded-lg transition-colors">
+                    <button onClick={onLogout} className="w-full p-3 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-text-primary-light dark:text-text-primary-dark font-bold rounded-lg transition-colors active:animate-button-press">
                         Log Out
                     </button>
                 </div>

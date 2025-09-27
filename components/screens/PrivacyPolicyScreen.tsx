@@ -6,7 +6,7 @@ interface PrivacyPolicyScreenProps {
 
 const PrivacyPolicyScreen: React.FC<PrivacyPolicyScreenProps> = ({ onBack }) => {
     return (
-        <div className="animate-fade-in text-text-primary-light dark:text-text-primary-dark">
+        <div className="animate-fade-in-up text-text-primary-light dark:text-text-primary-dark">
             <button onClick={onBack} className="flex items-center text-accent-light dark:text-accent-dark font-semibold mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

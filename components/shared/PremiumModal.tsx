@@ -72,7 +72,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onUpgrade 
             onClick={!isProcessing ? onClose : undefined}
         >
             <div 
-                className="bg-content-light dark:bg-content-dark rounded-2xl shadow-2xl p-6 max-w-lg w-full transform transition-all animate-fade-in"
+                className="bg-content-light dark:bg-content-dark rounded-2xl shadow-2xl p-6 max-w-lg w-full transform transition-all animate-fade-in-up"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className="text-center">
@@ -104,7 +104,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onUpgrade 
                 <button 
                     onClick={handleUpgradeClick}
                     disabled={isProcessing}
-                    className="w-full mt-8 py-3 px-4 bg-accent-light dark:bg-accent-dark text-white font-semibold rounded-lg shadow-md hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover transition-all duration-200 transform hover:scale-105 disabled:bg-gray-400 dark:disabled:bg-gray-500 disabled:cursor-wait flex items-center justify-center"
+                    className="w-full mt-8 py-3 px-4 bg-accent-light dark:bg-accent-dark text-white font-semibold rounded-lg shadow-md hover:bg-accent-light-hover dark:hover:bg-accent-dark-hover transition-all duration-200 transform hover:scale-105 disabled:bg-gray-400 dark:disabled:bg-gray-500 disabled:cursor-wait flex items-center justify-center active:animate-button-press"
                 >
                    {isProcessing ? (
                        <>
