@@ -1,18 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { User } from '../../types';
 
-interface LoginScreenProps {
-    onLogin: () => void;
+declare global {
+    interface Window {
+        google: any;
+    }
 }
 
-const GoogleIcon = () => (
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" className="w-6 h-6 mr-3">
-        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.82l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-        <path fill="none" d="M0 0h48v48H0z"></path>
-    </svg>
-);
+// Simple JWT decoder to extract user profile info from Google's credential response.
+// Note: In a production app, the token should be sent to a backend server for verification.
+function jwt_decode(token: string): any {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error("Failed to decode JWT", e);
+        return null;
+    }
+}
+
+
+interface LoginScreenProps {
+    onLogin: (user: User) => void;
+}
 
 const AppleIcon = ({ className }: { className?: string }) => (
     <svg className={`w-6 h-6 mr-2 ${className}`} viewBox="0 0 24 24" fill="currentColor">
@@ -22,6 +37,50 @@ const AppleIcon = ({ className }: { className?: string }) => (
 
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
+
+    useEffect(() => {
+        const handleGoogleLogin = (response: any) => {
+            if (!response.credential) {
+                console.error("Google Sign-In failed: No credential returned.");
+                return;
+            }
+
+            const decodedToken = jwt_decode(response.credential);
+            if (decodedToken) {
+                const user: User = {
+                    name: decodedToken.name,
+                    email: decodedToken.email,
+                    photoURL: decodedToken.picture,
+                };
+                onLogin(user);
+            }
+        };
+
+        if (window.google?.accounts?.id) {
+            window.google.accounts.id.initialize({
+                // IMPORTANT: This is a placeholder. To make Google Sign-In functional, 
+                // you must create a project in the Google Cloud Console, configure the
+                // OAuth consent screen, and generate your own Client ID.
+                // Replace the placeholder below with your actual Client ID.
+                // See: https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid
+                client_id: '427543445915-k08l4837225mlqgpulso4rg5ji3k2f9a.apps.googleusercontent.com',
+                callback: handleGoogleLogin
+            });
+
+            window.google.accounts.id.renderButton(
+                document.getElementById("googleSignInButton"),
+                { theme: "outline", size: "large", type: 'standard', text: 'continue_with', width: '318' }
+            );
+        } else {
+             // Fallback in case the Google script fails to load
+            const googleButtonContainer = document.getElementById("googleSignInButton");
+            if(googleButtonContainer) {
+                googleButtonContainer.innerHTML = '<p class="text-xs text-red-500">Google Sign-In failed to load. Please try again later.</p>';
+            }
+        }
+    }, [onLogin]);
+
+
     return (
         <div className="flex flex-col items-center justify-center h-full text-center p-4">
             <div className="mb-8">
@@ -39,15 +98,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             </div>
             
             <div className="w-full max-w-xs space-y-4 animate-fade-in" style={{ animationDelay: '600ms' }}>
+                 {/* This div will be populated by the Google Sign-In button */}
+                <div id="googleSignInButton" className="flex justify-center h-[44px]"></div>
+
+                {/* 
+                  Apple Sign-In requires a server-side implementation to handle the callback securely.
+                  Without a backend, we can't implement real Apple authentication.
+                  For this demo, we will use mock data for the Apple login flow.
+                */}
                 <button 
-                    onClick={onLogin} 
-                    className="w-full py-3 px-4 bg-white dark:bg-gray-200 text-gray-800 font-semibold rounded-lg shadow-md border border-gray-200 dark:border-transparent hover:bg-gray-100 dark:hover:bg-white transition-all duration-200 transform hover:scale-105 flex items-center justify-center"
-                >
-                    <GoogleIcon />
-                    Continue with Google
-                </button>
-                <button 
-                    onClick={onLogin} 
+                    onClick={() => onLogin({ name: 'Casey Smith', email: 'casey.s@example.com', photoURL: 'https://i.pravatar.cc/150?u=casey' })}
                     className="w-full py-3 px-4 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-lg shadow-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 transform hover:scale-105 flex items-center justify-center"
                 >
                     <AppleIcon className="text-white dark:text-black" />

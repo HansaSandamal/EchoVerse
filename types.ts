@@ -54,3 +54,9 @@ export interface Achievement {
 export type ColorTheme = 'indigo' | 'forest' | 'sunset';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+
+export interface User {
+    name: string;
+    email: string;
+    photoURL: string;
+}

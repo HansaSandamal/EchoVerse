@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { JournalEntry, Screen, AIAnalysisResult, DetectedMood } from '../../types';
+import { JournalEntry, Screen, AIAnalysisResult, DetectedMood, User } from '../../types';
 import VoiceRecorder from '../shared/VoiceRecorder';
 import MoodSelector from '../shared/MoodSelector';
 import { getAIAnalysisForEntry } from '../../services/geminiService';
 
 interface HomeScreenProps {
     addJournalEntry: (entry: Omit<JournalEntry, 'date'>) => void;
+    currentUser: User | null;
 }
 
 type EntryMode = 'choice' | 'voice' | 'manual' | 'success';
@@ -24,7 +25,7 @@ const ScreenHeader = ({ onBack, title }: { onBack: () => void; title: string }) 
 );
 
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser }) => {
     const [entryMode, setEntryMode] = useState<EntryMode>('choice');
     const [note, setNote] = useState<string>('');
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -116,9 +117,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry }) => {
         else if (hour < 18) greetingText = "Good afternoon";
         else greetingText = "Good evening";
 
+        const firstName = currentUser?.name.split(' ')[0];
+
         return (
             <div>
-                <h1 className="text-3xl font-bold text-text-primary-light dark:text-text-primary-dark">{greetingText}</h1>
+                <h1 className="text-3xl font-bold text-text-primary-light dark:text-text-primary-dark">{greetingText}{firstName ? `, ${firstName}` : ''}</h1>
                 <p className="text-text-secondary-light dark:text-text-secondary-dark mt-1">What's on your mind today?</p>
             </div>
         )

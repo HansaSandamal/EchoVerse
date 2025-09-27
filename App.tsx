@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Screen, JournalEntry, ColorTheme, ThemeMode } from './types';
+import { Screen, JournalEntry, ColorTheme, ThemeMode, User } from './types';
 import LoginScreen from './components/screens/LoginScreen';
 import HomeScreen from './components/screens/HomeScreen';
 import ProgressScreen from './components/screens/ProgressScreen';
@@ -39,7 +39,7 @@ const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<R
 
 
 const App: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+    const [currentUser, setCurrentUser] = useLocalStorage<User | null>('currentUser', null);
     const [activeScreen, setActiveScreen] = useState<Screen>(Screen.Home);
     const [journalHistory, setJournalHistory] = useLocalStorage<JournalEntry[]>('journalHistory', []);
     const [isPremium, setIsPremium] = useLocalStorage<boolean>('isPremium', false);
@@ -78,12 +78,12 @@ const App: React.FC = () => {
     }, [themeMode]);
 
 
-    const handleLogin = () => {
-        setIsLoggedIn(true);
+    const handleLogin = (user: User) => {
+        setCurrentUser(user);
     };
 
     const handleLogout = () => {
-        setIsLoggedIn(false);
+        setCurrentUser(null);
         setActiveScreen(Screen.Home);
     };
     
@@ -148,7 +148,7 @@ const App: React.FC = () => {
     const renderScreen = () => {
         switch (activeScreen) {
             case Screen.Home:
-                return <HomeScreen addJournalEntry={addJournalEntry} />;
+                return <HomeScreen addJournalEntry={addJournalEntry} currentUser={currentUser} />;
             case Screen.Progress:
                 return <ProgressScreen journalHistory={journalHistory} streak={streak} isPremium={isPremium} onUpgradeRequest={() => setIsPremiumModalOpen(true)} />;
             case Screen.Settings:
@@ -164,15 +164,16 @@ const App: React.FC = () => {
                             setColorTheme={setColorTheme}
                             themeMode={themeMode}
                             setThemeMode={setThemeMode}
+                            currentUser={currentUser}
                         />;
             case Screen.Privacy:
                 return <PrivacyPolicyScreen onBack={() => setActiveScreen(Screen.Settings)} />
             default:
-                return <HomeScreen addJournalEntry={addJournalEntry} />;
+                return <HomeScreen addJournalEntry={addJournalEntry} currentUser={currentUser} />;
         }
     };
     
-    if (!isLoggedIn) {
+    if (!currentUser) {
         return (
             <div className="bg-bkg-light dark:bg-bkg-dark w-screen h-screen">
                 <LoginScreen onLogin={handleLogin} />

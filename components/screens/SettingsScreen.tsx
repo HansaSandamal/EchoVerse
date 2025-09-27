@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService';
-import { JournalEntry, ColorTheme, ThemeMode } from '../../types';
+import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types';
 
 interface SettingsScreenProps {
     isPremium: boolean;
@@ -14,6 +14,7 @@ interface SettingsScreenProps {
     setColorTheme: (theme: ColorTheme) => void;
     themeMode: ThemeMode;
     setThemeMode: (mode: ThemeMode) => void;
+    currentUser: User | null;
 }
 
 const ThemeOption: React.FC<{
@@ -65,7 +66,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
     colorTheme,
     setColorTheme,
     themeMode,
-    setThemeMode
+    setThemeMode,
+    currentUser
 }) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
     const [reminderTime, setReminderTime] = useState<string | null>(null);
@@ -123,6 +125,17 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
             </div>
 
             <div className="space-y-6">
+                 {/* Profile Section */}
+                 {currentUser && (
+                    <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl flex items-center space-x-4">
+                        <img src={currentUser.photoURL} alt="Profile" className="w-16 h-16 rounded-full" />
+                        <div>
+                            <h2 className="font-semibold text-xl text-text-primary-light dark:text-text-primary-dark">{currentUser.name}</h2>
+                            <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">{currentUser.email}</p>
+                        </div>
+                    </div>
+                )}
+                
                 {/* Account Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">Account</h2>
