@@ -7,6 +7,9 @@ if (!process.env.API_KEY) {
 
 const ai = process.env.API_KEY ? new GoogleGenAI({ apiKey: process.env.API_KEY }) : null;
 
+// Export a status check for the rest of the app to use, especially for debugging.
+export const isAIServiceAvailable = !!ai;
+
 const MOCK_ANALYSIS: AIAnalysisResult = {
     detectedMood: DetectedMood.Neutral,
     summary: "This is a mock summary of your journal entry. The AI would normally provide a concise overview of your thoughts here.",

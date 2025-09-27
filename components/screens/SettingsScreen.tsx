@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService';
 import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types';
+import { isAIServiceAvailable } from '../../services/geminiService';
 
 interface SettingsScreenProps {
     isPremium: boolean;
@@ -139,6 +140,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 {/* Account Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">Account</h2>
+                    <div className="text-xs text-center p-2 mb-3 rounded bg-bkg-light dark:bg-bkg-dark text-text-secondary-light dark:text-text-secondary-dark">
+                        <p>AI Service Status: {isAIServiceAvailable ? 
+                            <span className="font-bold text-green-500">Connected</span> : 
+                            <span className="font-bold text-red-500">Not Connected (API Key Missing)</span>
+                        }</p>
+                    </div>
                     {isPremium ? (
                          <div className="flex items-center justify-between p-3 bg-green-100 dark:bg-green-500/10 rounded-lg">
                             <p className="font-medium text-green-700 dark:text-green-300">Premium Active ✨</p>
