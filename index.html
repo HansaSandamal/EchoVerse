@@ -6,151 +6,33 @@
     <title>EchoVerse - AI Voice Journal</title>
     
     <!-- PWA Manifest & Themeing -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/svg+xml" href="/assets/icon.svg">
     <meta name="theme-color" content="#0F172A">
     
     <!-- Apple PWA Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="EchoVerse">
-    <link rel="apple-touch-icon" href="assets/icon.svg">
+    <link rel="apple-touch-icon" href="/assets/icon.svg">
 
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-    // Configure Tailwind to use CSS variables for theming
-    tailwind.config = {
-      darkMode: 'class', // Enable class-based dark mode
-      theme: {
-        extend: {
-          colors: {
-            bkg: { 
-                light: 'var(--color-bkg-light)',
-                dark: 'var(--color-bkg-dark)' 
-            },
-            content: { 
-                light: 'var(--color-content-light)',
-                dark: 'var(--color-content-dark)' 
-            },
-            text: { 
-              'primary-light': 'var(--color-text-primary-light)',
-              'secondary-light': 'var(--color-text-secondary-light)',
-              'primary-dark': 'var(--color-text-primary-dark)',
-              'secondary-dark': 'var(--color-text-secondary-dark)',
-            },
-            accent: {
-              light: 'var(--color-accent-light)',
-              'light-hover': 'var(--color-accent-light-hover)',
-              dark: 'var(--color-accent-dark)',
-              'dark-hover': 'var(--color-accent-dark-hover)',
-            }
-          },
-          animation: {
-            'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-            'pulse-glow': 'pulseGlow 2s infinite ease-in-out',
-            'spin': 'spin 1s linear infinite',
-            'button-press': 'buttonPress 0.1s ease-out',
-          },
-          keyframes: {
-            fadeInUp: {
-              '0%': { opacity: '0', transform: 'translateY(10px)' },
-              '100%': { opacity: '1', transform: 'translateY(0)' },
-            },
-            pulseGlow: {
-               '0%, 100%': { boxShadow: '0 0 0 0 rgba(129, 140, 248, 0.4)' },
-               '50%': { boxShadow: '0 0 20px 10px rgba(129, 140, 248, 0)' },
-            },
-            spin: {
-              'from': { transform: 'rotate(0deg)' },
-              'to': { transform: 'rotate(360deg)' },
-            },
-            buttonPress: {
-                '0%': { transform: 'scale(1)' },
-                '100%': { transform: 'scale(0.97)' },
-            }
-          }
-        }
-      }
-    }
-    </script>
-
-    <!-- Base styles and theme variables -->
-    <style type="text/tailwindcss">
-        @layer base {
-            .theme-indigo {
-                /* Light Theme */
-                --color-bkg-light: #F1F5F9; /* Slate 100 */
-                --color-content-light: #FFFFFF;
-                --color-text-primary-light: #0F172A; /* Slate 900 */
-                --color-text-secondary-light: #64748B; /* Slate 500 */
-                --color-accent-light: #6366F1; /* Indigo 500 */
-                --color-accent-light-hover: #4F46E5; /* Indigo 600 */
-                /* Dark Theme */
-                --color-bkg-dark: #0F172A; /* Slate 900 */
-                --color-content-dark: #1E293B; /* Slate 800 */
-                --color-text-primary-dark: #F1F5F9; /* Slate 100 */
-                --color-text-secondary-dark: #94A3B8; /* Slate 400 */
-                --color-accent-dark: #818CF8; /* Indigo 400 */
-                --color-accent-dark-hover: #6366F1; /* Indigo 500 */
-            }
-            .theme-forest {
-                 /* Light Theme */
-                --color-bkg-light: #F0FDF4; /* Green 50 */
-                --color-content-light: #FFFFFF;
-                --color-text-primary-light: #14532D; /* Green 900 */
-                --color-text-secondary-light: #52665A; /* Green 700 */
-                --color-accent-light: #10B981; /* Emerald 500 */
-                --color-accent-light-hover: #059669; /* Emerald 600 */
-                /* Dark Theme */
-                --color-bkg-dark: #111827; /* Gray 900 */
-                --color-content-dark: #1F2937; /* Gray 800 */
-                --color-text-primary-dark: #F3F4F6; /* Gray 100 */
-                --color-text-secondary-dark: #9CA3AF; /* Gray 400 */
-                --color-accent-dark: #34D399; /* Emerald 400 */
-                --color-accent-dark-hover: #10B981; /* Emerald 500 */
-            }
-            .theme-sunset {
-                /* Light Theme */
-                --color-bkg-light: #FFF7ED; /* Orange 50 */
-                --color-content-light: #FFFFFF;
-                --color-text-primary-light: #78350F; /* Amber 900 */
-                --color-text-secondary-light: #92400E; /* Amber 700 */
-                --color-accent-light: #F97316; /* Orange 500 */
-                --color-accent-light-hover: #EA580C; /* Orange 600 */
-                /* Dark Theme */
-                --color-bkg-dark: #1c1917; /* Stone 900 */
-                --color-content-dark: #292524; /* Stone 800 */
-                --color-text-primary-dark: #f5f5f4; /* Stone 100 */
-                --color-text-secondary-dark: #a8a29e; /* Stone 400 */
-                --color-accent-dark: #FB923C; /* Orange 400 */
-                --color-accent-dark-hover: #F97316; /* Orange 600 */
-            }
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-                @apply bg-bkg-light dark:bg-bkg-dark antialiased;
-            }
-        }
-    </style>
-    
-    <script type="importmap">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+<script type="importmap">
 {
   "imports": {
-    "react": "https://aistudiocdn.com/react@^19.1.1",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
-    "react/": "https://aistudiocdn.com/react@^19.1.1/",
-    "date-fns": "https://aistudiocdn.com/date-fns@^4.1.0",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
     "recharts": "https://aistudiocdn.com/recharts@^3.2.1",
-    "date-fns/": "https://aistudiocdn.com/date-fns@^4.1.0/"
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.21.0",
+    "date-fns": "https://aistudiocdn.com/date-fns@^4.1.0"
   }
 }
 </script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="/src/index.tsx"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {

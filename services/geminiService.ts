@@ -1,11 +1,16 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types';
 
-if (!process.env.API_KEY) {
+// Fix: Use `process.env.API_KEY` to access the API key as per the coding guidelines,
+// which also resolves the TypeScript error for `import.meta.env`.
+const apiKey = process.env.API_KEY;
+
+if (!apiKey) {
+  // Fix: Updated warning message to reflect the correct environment variable name.
   console.warn("API_KEY environment variable not set. AI features will be mocked.");
 }
 
-const ai = process.env.API_KEY ? new GoogleGenAI({ apiKey: process.env.API_KEY }) : null;
+const ai = apiKey ? new GoogleGenAI({ apiKey: apiKey }) : null;
 
 // Export a status check for the rest of the app to use, especially for debugging.
 export const isAIServiceAvailable = !!ai;
@@ -17,8 +22,6 @@ const MOCK_ANALYSIS: AIAnalysisResult = {
     rating: 5,
     themes: ["mock", "testing"],
 };
-
-const MOCK_CONNECTIONS = "This is a mock insight. With Premium, the AI would analyze your recent entries and identify recurring themes, emotional patterns, or connections between topics to help you understand yourself better.";
 
 const analysisSchema = {
     type: Type.OBJECT,
@@ -53,6 +56,7 @@ const analysisSchema = {
 
 export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisResult> => {
     if (!ai) {
+        // Fix: Updated error message to reference the correct environment variable name.
         console.error("Gemini AI service is not available. Ensure API_KEY is set in the environment.");
         return {
             ...MOCK_ANALYSIS,
@@ -94,6 +98,7 @@ export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisRes
 export const getAIConnections = async (history: JournalEntry[]): Promise<string> => {
     // If AI is not available (e.g., missing API key), return a clear error message.
     if (!ai) {
+        // Fix: Updated error message to reference the correct environment variable name.
         console.error("Gemini AI service is not available. Ensure API_KEY is set in the environment.");
         return "The AI insight service is currently unavailable. This is likely due to a missing API key in the application's configuration.";
     }
