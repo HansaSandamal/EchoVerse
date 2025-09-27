@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types';
+import { JournalEntry, DetectedMood, AIAnalysisResult } from '../../types';
 
 // Fix: Use `process.env.API_KEY` to access the API key as required by the coding guidelines.
 const apiKey = process.env.API_KEY;
