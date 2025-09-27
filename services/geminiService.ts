@@ -81,9 +81,15 @@ export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisRes
 };
 
 export const getAIConnections = async (history: JournalEntry[]): Promise<string> => {
-     if (!ai || history.length < 3) {
+    // If AI is not available (e.g., missing API key), return the mock response.
+    if (!ai) {
         await new Promise(resolve => setTimeout(resolve, 1200));
         return MOCK_CONNECTIONS;
+    }
+
+    // If there aren't enough entries for a meaningful analysis, inform the user.
+    if (history.length < 3) {
+        return "You need at least 3 journal entries for me to find connections. Keep up your journaling habit!";
     }
     
     try {
@@ -112,7 +118,15 @@ export const getAIConnections = async (history: JournalEntry[]): Promise<string>
             }
         });
         
-        return response.text.trim();
+        const insightText = response.text.trim();
+
+        // Handle cases where the model might return an empty response
+        if (!insightText) {
+             console.warn("AI returned an empty insight for 'Connect the Dots'.");
+             return "I looked through your recent entries, but couldn't find a clear connection just yet. Keep journaling, and I'll try again soon!";
+        }
+
+        return insightText;
 
     } catch(error) {
         console.error("Error fetching AI connections:", error);
