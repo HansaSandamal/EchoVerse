@@ -1,7 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { JournalEntry, DetectedMood, AIAnalysisResult } from '../../types';
+import { JournalEntry, DetectedMood, AIAnalysisResult } from './types';
 
-// Fix: Use `process.env.API_KEY` to access the API key as required by the coding guidelines.
+// Fix: Use `process.env.API_KEY` to access the API key as per the coding guidelines,
+// which also resolves the TypeScript error for `import.meta.env`.
 const apiKey = process.env.API_KEY;
 
 if (!apiKey) {

@@ -56,3 +56,20 @@
         @apply bg-bkg-light dark:bg-bkg-dark antialiased;
     }
 }
+
+@layer utilities {
+    @keyframes fadeInUp {
+        '0%': { opacity: 0; transform: translateY(10px); }
+        '100%': { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes buttonPress {
+        '0%': { transform: scale(1); }
+        '100%': { transform: scale(0.97); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+    .active\:animate-button-press:active {
+        animation: buttonPress 0.1s ease-out;
+    }
+}
