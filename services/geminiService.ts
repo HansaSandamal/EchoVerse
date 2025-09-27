@@ -49,7 +49,15 @@ const analysisSchema = {
 };
 
 export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisResult> => {
-    if (!ai || !note.trim()) {
+    if (!ai) {
+        console.error("Gemini AI service is not available. Ensure API_KEY is set in the environment.");
+        return {
+            ...MOCK_ANALYSIS,
+            summary: "AI analysis is unavailable due to a missing API key. This is a mock analysis.",
+            themes: ["config-error"],
+        };
+    }
+    if (!note.trim()) {
         await new Promise(resolve => setTimeout(resolve, 800));
         return MOCK_ANALYSIS;
     }
@@ -81,10 +89,10 @@ export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisRes
 };
 
 export const getAIConnections = async (history: JournalEntry[]): Promise<string> => {
-    // If AI is not available (e.g., missing API key), return the mock response.
+    // If AI is not available (e.g., missing API key), return a clear error message.
     if (!ai) {
-        await new Promise(resolve => setTimeout(resolve, 1200));
-        return MOCK_CONNECTIONS;
+        console.error("Gemini AI service is not available. Ensure API_KEY is set in the environment.");
+        return "The AI insight service is currently unavailable. This is likely due to a missing API key in the application's configuration.";
     }
 
     // If there aren't enough entries for a meaningful analysis, inform the user.

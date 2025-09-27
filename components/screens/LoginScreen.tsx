@@ -56,7 +56,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             }
         };
 
-        if (window.google?.accounts?.id) {
+        const googleButtonContainer = document.getElementById("googleSignInButton");
+
+        if (window.google?.accounts?.id && googleButtonContainer) {
             window.google.accounts.id.initialize({
                 // IMPORTANT: This is a placeholder. To make Google Sign-In functional, 
                 // you must create a project in the Google Cloud Console, configure the
@@ -68,54 +70,59 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
             });
 
             window.google.accounts.id.renderButton(
-                document.getElementById("googleSignInButton"),
+                googleButtonContainer,
                 { theme: "outline", size: "large", type: 'standard', text: 'continue_with', width: '318' }
             );
-        } else {
+        } else if (googleButtonContainer) {
              // Fallback in case the Google script fails to load
-            const googleButtonContainer = document.getElementById("googleSignInButton");
-            if(googleButtonContainer) {
-                googleButtonContainer.innerHTML = '<p class="text-xs text-red-500">Google Sign-In failed to load. Please try again later.</p>';
-            }
+            googleButtonContainer.innerHTML = '<p class="text-xs text-red-500">Google Sign-In failed to load. Please try again later.</p>';
         }
     }, [onLogin]);
 
 
     return (
-        <div className="flex flex-col items-center justify-center h-full text-center p-4">
-            <div className="mb-8">
-                <div className="inline-block p-4 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full mb-4 shadow-lg animate-fade-in" style={{ animationDelay: '150ms' }}>
-                     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
-                    </svg>
+        <div className="flex flex-col h-full text-center p-6 sm:p-8">
+            <div className="flex-grow flex flex-col items-center justify-center">
+                <div className="mb-10">
+                    <div className="inline-block p-4 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full mb-4 shadow-lg animate-fade-in" style={{ animationDelay: '150ms' }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
+                        </svg>
+                    </div>
+                    <h1 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark animate-fade-in" style={{ animationDelay: '300ms' }}>
+                        Welcome to <span className="text-accent-light dark:text-accent-dark">EchoVerse</span>
+                    </h1>
+                    <p className="text-text-secondary-light dark:text-text-secondary-dark mt-2 max-w-md mx-auto animate-fade-in" style={{ animationDelay: '450ms' }}>
+                        Your personal AI voice journal for self-reflection and mental clarity.
+                    </p>
                 </div>
-                <h1 className="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark animate-fade-in" style={{ animationDelay: '300ms' }}>
-                    Welcome to <span className="text-accent-light dark:text-accent-dark">EchoVerse</span>
-                </h1>
-                <p className="text-text-secondary-light dark:text-text-secondary-dark mt-2 max-w-md mx-auto animate-fade-in" style={{ animationDelay: '450ms' }}>
-                    Your personal AI voice journal for self-reflection and mental clarity.
-                </p>
-            </div>
-            
-            <div className="w-full max-w-xs space-y-4 animate-fade-in" style={{ animationDelay: '600ms' }}>
-                 {/* This div will be populated by the Google Sign-In button */}
-                <div id="googleSignInButton" className="flex justify-center h-[44px]"></div>
+                
+                <div className="w-full max-w-xs space-y-3 animate-fade-in" style={{ animationDelay: '600ms' }}>
+                    {/* This div will be populated by the Google Sign-In button */}
+                    <div id="googleSignInButton" className="flex justify-center items-center h-[44px] w-full rounded-lg bg-bkg-light dark:bg-content-dark border border-gray-300 dark:border-gray-600">
+                        {/* Loading placeholder to prevent layout shift */}
+                        <svg className="animate-spin h-5 w-5 text-text-secondary-light dark:text-text-secondary-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
 
-                {/* 
-                  Apple Sign-In requires a server-side implementation to handle the callback securely.
-                  Without a backend, we can't implement real Apple authentication.
-                  For this demo, we will use mock data for the Apple login flow.
-                */}
-                <button 
-                    onClick={() => onLogin({ name: 'Casey Smith', email: 'casey.s@example.com', photoURL: 'https://i.pravatar.cc/150?u=casey' })}
-                    className="w-full py-3 px-4 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-lg shadow-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-all duration-200 transform hover:scale-105 flex items-center justify-center"
-                >
-                    <AppleIcon className="text-white dark:text-black" />
-                    Continue with Apple
-                </button>
+                    {/* 
+                      Apple Sign-In requires a server-side implementation to handle the callback securely.
+                      Without a backend, we can't implement real Apple authentication.
+                      For this demo, we will use mock data for the Apple login flow.
+                    */}
+                    <button 
+                        onClick={() => onLogin({ name: 'Casey Smith', email: 'casey.s@example.com', photoURL: 'https://i.pravatar.cc/150?u=casey' })}
+                        className="w-full h-[44px] px-4 bg-black dark:bg-white text-white dark:text-black font-semibold rounded-lg shadow-sm hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors duration-200 flex items-center justify-center"
+                    >
+                        <AppleIcon className="text-white dark:text-black" />
+                        Continue with Apple
+                    </button>
+                </div>
             </div>
 
-            <footer className="absolute bottom-4 text-xs text-text-secondary-light dark:text-text-secondary-dark animate-fade-in" style={{ animationDelay: '750ms' }}>
+            <footer className="w-full text-center text-xs text-text-secondary-light dark:text-text-secondary-dark animate-fade-in" style={{ animationDelay: '750ms' }}>
                 <p>By continuing, you agree to our Privacy Policy.</p>
             </footer>
         </div>
