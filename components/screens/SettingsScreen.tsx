@@ -140,12 +140,17 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 {/* Account Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">Account</h2>
-                    <div className="text-xs text-center p-2 mb-3 rounded bg-bkg-light dark:bg-bkg-dark text-text-secondary-light dark:text-text-secondary-dark">
-                        <p>AI Service Status: {isAIServiceAvailable ? 
-                            <span className="font-bold text-green-500">Connected</span> : 
-                            <span className="font-bold text-red-500">Not Connected (API Key Missing)</span>
-                        }</p>
+                    <div className={`flex items-center justify-center p-2 mb-3 rounded-lg ${isAIServiceAvailable ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
+                        {isAIServiceAvailable ? (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 dark:text-green-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        ) : (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        )}
+                        <span className={`text-sm font-semibold ${isAIServiceAvailable ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'}`}>
+                            AI Service: {isAIServiceAvailable ? 'Connected' : 'Unavailable (API Key Missing)'}
+                        </span>
                     </div>
+
                     {isPremium ? (
                          <div className="flex items-center justify-between p-3 bg-green-100 dark:bg-green-500/10 rounded-lg">
                             <p className="font-medium text-green-700 dark:text-green-300">Premium Active ✨</p>
