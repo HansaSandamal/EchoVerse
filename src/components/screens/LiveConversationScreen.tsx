@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 // Fix: Remove non-exported 'LiveSession' type.
+// @google/genai-api-import-fix: Use checkAIServiceAvailability for async check instead of isAIServiceAvailable.
 import { GoogleGenAI, LiveServerMessage, Modality, Blob } from '@google/genai';
-import { isAIServiceAvailable } from '../../services/geminiService';
+import { checkAIServiceAvailability } from '../../services/geminiService';
 
 // --- Audio Helper Functions (as per Gemini API guidelines) ---
 
@@ -74,15 +75,20 @@ type ConversationTurn = {
     isFinal?: boolean;
 };
 
-type Status = 'idle' | 'connecting' | 'active' | 'error';
+// @google/genai-api-feature-fix: Add 'checking' to status to handle async initialization.
+type Status = 'idle' | 'connecting' | 'active' | 'error' | 'checking';
 
 let turnCounter = 0;
-const ai = isAIServiceAvailable ? new GoogleGenAI({ apiKey: process.env.API_KEY }) : null;
+// @google/genai-api-refactor: Move AI client initialization inside component to support async check.
 
 const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack }) => {
-    const [status, setStatus] = useState<Status>('idle');
+    // @google/genai-api-refactor: Initialize status to 'checking' for async AI service check.
+    const [status, setStatus] = useState<Status>('checking');
     const [transcript, setTranscript] = useState<ConversationTurn[]>([]);
     const [errorMessage, setErrorMessage] = useState<string>('');
+    
+    // @google/genai-api-refactor: Use a ref for the AI client instance.
+    const aiRef = useRef<GoogleGenAI | null>(null);
 
     // Fix: Replace 'LiveSession' with 'any' as it is not an exported type.
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
@@ -92,6 +98,22 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
     const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
     const sourcesRef = useRef(new Set<AudioBufferSourceNode>());
     const nextStartTimeRef = useRef(0);
+
+    // @google/genai-api-refactor: Check for AI service availability and initialize client on mount.
+    useEffect(() => {
+        const initializeAI = async () => {
+            const isAvailable = await checkAIServiceAvailability();
+            if (isAvailable) {
+                // The API key must be available on the client for the Live API to work.
+                aiRef.current = new GoogleGenAI({ apiKey: process.env.API_KEY });
+                setStatus('idle');
+            } else {
+                setErrorMessage("AI Service is not available. Please ensure the API Key is correctly configured in your deployment environment.");
+                setStatus('error');
+            }
+        };
+        initializeAI();
+    }, []);
 
     const cleanup = useCallback(() => {
         console.log('Cleaning up resources...');
@@ -118,7 +140,7 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
     }, [cleanup]);
 
     const startConversation = async () => {
-        if (!ai) {
+        if (!aiRef.current) {
             setErrorMessage("AI Service is not available. Ensure the API Key is configured.");
             setStatus('error');
             return;
@@ -142,7 +164,7 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
         // Fix: Add 'as any' to handle vendor-prefixed 'webkitAudioContext'.
         outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 
-        sessionPromiseRef.current = ai.live.connect({
+        sessionPromiseRef.current = aiRef.current.live.connect({
             model: 'gemini-2.5-flash-native-audio-preview-09-2025',
             callbacks: {
                 onopen: () => {
@@ -276,12 +298,13 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                         <button onClick={onBack} className="mt-4 px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full">Go Back</button>
                     </div>
                  )}
-                 {!isAIServiceAvailable && status === 'idle' && (
-                     <div className="text-center p-4 rounded-lg bg-red-100 dark:bg-red-900/30">
-                        <p className="font-semibold text-red-700 dark:text-red-300">AI Service Unavailable</p>
-                        <p className="text-sm text-red-600 dark:text-red-400">Please ensure the API Key is correctly configured in your deployment environment.</p>
-                     </div>
-                 )}
+                {/* @google/genai-api-refactor: Add a 'checking' status indicator. */}
+                {status === 'checking' && (
+                    <div className="flex flex-col items-center">
+                        <svg className="animate-spin h-8 w-8 text-accent-light dark:text-accent-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <p className="mt-2 text-text-secondary-light dark:text-text-secondary-dark">Checking AI Service...</p>
+                    </div>
+                )}
             </div>
         </div>
     );

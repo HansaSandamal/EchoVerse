@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService';
 import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types';
-import { isAIServiceAvailable } from '../../services/geminiService';
+import { AIStatus } from '../../App'; // Import AIStatus type
 
 interface SettingsScreenProps {
     isPremium: boolean;
@@ -16,6 +16,7 @@ interface SettingsScreenProps {
     themeMode: ThemeMode;
     setThemeMode: (mode: ThemeMode) => void;
     currentUser: User | null;
+    aiStatus: AIStatus;
 }
 
 const ThemeOption: React.FC<{
@@ -68,7 +69,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
     setColorTheme,
     themeMode,
     setThemeMode,
-    currentUser
+    currentUser,
+    aiStatus
 }) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
     const [reminderTime, setReminderTime] = useState<string | null>(null);
@@ -117,6 +119,33 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
         }
     };
 
+    const renderAIStatus = () => {
+        switch (aiStatus) {
+            case 'available':
+                return (
+                    <div className="flex items-center justify-center p-2 rounded-lg bg-green-100 dark:bg-green-900/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 dark:text-green-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span className="text-sm font-semibold text-green-800 dark:text-green-300">AI Service: Connected</span>
+                    </div>
+                );
+            case 'unavailable':
+                 return (
+                    <div className="flex items-center justify-center p-2 rounded-lg bg-red-100 dark:bg-red-900/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span className="text-sm font-semibold text-red-800 dark:text-red-300">AI Service: Unavailable (API Key Missing)</span>
+                    </div>
+                );
+            case 'checking':
+            default:
+                return (
+                     <div className="flex items-center justify-center p-2 rounded-lg bg-gray-100 dark:bg-gray-700/30">
+                        <svg className="animate-spin h-5 w-5 text-gray-500 dark:text-gray-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">AI Service: Checking...</span>
+                    </div>
+                );
+        }
+    }
+
 
     return (
         <div className="space-y-8 animate-fade-in-up">
@@ -126,7 +155,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
             </div>
 
             <div className="space-y-6">
-                 {/* Profile Section */}
                  {currentUser && (
                     <div className="p-4 bg-gradient-to-r from-content-light to-bkg-light dark:from-content-dark dark:to-bkg-dark rounded-xl flex items-center space-x-4">
                         <img src={currentUser.photoURL} alt="Profile" className="w-16 h-16 rounded-full" />
@@ -137,20 +165,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     </div>
                 )}
                 
-                {/* Account Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">Account</h2>
-                    <div className={`flex items-center justify-center p-2 mb-3 rounded-lg ${isAIServiceAvailable ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'}`}>
-                        {isAIServiceAvailable ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 dark:text-green-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        )}
-                        <span className={`text-sm font-semibold ${isAIServiceAvailable ? 'text-green-800 dark:text-green-300' : 'text-red-800 dark:text-red-300'}`}>
-                            AI Service: {isAIServiceAvailable ? 'Connected' : 'Unavailable (API Key Missing)'}
-                        </span>
-                    </div>
-
+                    <div className="mb-3">{renderAIStatus()}</div>
                     {isPremium ? (
                          <div className="flex items-center justify-between p-3 bg-green-100 dark:bg-green-500/10 rounded-lg">
                             <p className="font-medium text-green-700 dark:text-green-300">Premium Active ✨</p>
@@ -163,7 +180,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     )}
                 </div>
 
-                {/* Appearance Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                      <h2 className="font-semibold text-lg text-text-primary-light dark:text-text-primary-dark">Appearance</h2>
                      <div className="mt-4">
@@ -184,7 +200,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                      </div>
                 </div>
 
-                {/* Notifications Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">Notifications</h2>
                      <div className="flex items-center justify-between">
@@ -202,7 +217,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     )}
                 </div>
 
-                {/* About Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">About</h2>
                     <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -211,7 +225,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     </div>
                 </div>
 
-                {/* Danger Zone */}
                  <div className="p-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl">
                     <h2 className="font-semibold text-lg mb-2 text-red-700 dark:text-red-300">Danger Zone</h2>
                      <button onClick={onResetRequest} className="w-full p-3 bg-red-200 dark:bg-red-600/30 hover:bg-red-300 dark:hover:bg-red-600/50 text-red-800 dark:text-red-200 font-bold rounded-lg transition-colors active:animate-button-press">
@@ -219,7 +232,6 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     </button>
                 </div>
 
-                {/* Log Out */}
                  <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <button onClick={onLogout} className="w-full p-3 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-text-primary-light dark:text-text-primary-dark font-bold rounded-lg transition-colors active:animate-button-press">
                         Log Out

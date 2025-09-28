@@ -11,6 +11,7 @@ import PremiumModal from './components/shared/PremiumModal';
 import ConfirmationModal from './components/shared/ConfirmationModal';
 import { NAV_ITEMS } from './constants';
 import { isToday, isYesterday, differenceInCalendarDays } from 'date-fns';
+import { checkAIServiceAvailability } from './services/geminiService';
 
 // Custom hook for persisting state to localStorage
 const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
@@ -36,6 +37,7 @@ const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<R
     return [storedValue, setValue];
 };
 
+export type AIStatus = 'checking' | 'available' | 'unavailable';
 
 const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useLocalStorage<User | null>('currentUser', null);
@@ -47,13 +49,21 @@ const App: React.FC = () => {
     
     const [isPremiumModalOpen, setIsPremiumModalOpen] = useState<boolean>(false);
     const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
+    const [aiStatus, setAiStatus] = useState<AIStatus>('checking');
+
+    // Check AI Service availability on startup
+    useEffect(() => {
+        checkAIServiceAvailability().then(isAvailable => {
+            setAiStatus(isAvailable ? 'available' : 'unavailable');
+        });
+    }, []);
 
     // Apply color theme class
     useEffect(() => {
-        const root = window.document.documentElement;
-        root.classList.remove('theme-indigo', 'theme-forest', 'theme-sunset');
-        root.classList.add(`theme-${colorTheme}`);
+        document.body.classList.remove('theme-indigo', 'theme-forest', 'theme-sunset');
+        document.body.classList.add(`theme-${colorTheme}`);
     }, [colorTheme]);
+
 
     // Apply light/dark mode class
     useEffect(() => {
@@ -87,7 +97,6 @@ const App: React.FC = () => {
     };
     
     const handleResetAllData = () => {
-        // Clear all data and log out
         localStorage.clear();
         setJournalHistory([]);
         setIsPremium(false);
@@ -106,41 +115,28 @@ const App: React.FC = () => {
     };
 
     const streak = useMemo(() => {
-        if (journalHistory.length === 0) {
-            return 0;
-        }
-
+        if (journalHistory.length === 0) return 0;
         const sortedHistory = [...journalHistory].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         const uniqueDays = sortedHistory.reduce((acc, entry) => {
             const dateStr = entry.date.substring(0, 10);
-            if (!acc.includes(dateStr)) {
-                acc.push(dateStr);
-            }
+            if (!acc.includes(dateStr)) acc.push(dateStr);
             return acc;
         }, [] as string[]);
 
-        if (uniqueDays.length === 0) {
-            return 0;
-        }
-
-        // Fix: Appending 'T00:00:00' ensures date-only strings are parsed in local time, not UTC.
+        if (uniqueDays.length === 0) return 0;
         const lastEntryDate = new Date(uniqueDays[0] + 'T00:00:00');
-        if (!isToday(lastEntryDate) && !isYesterday(lastEntryDate)) {
-            return 0; // Streak broken
-        }
+        if (!isToday(lastEntryDate) && !isYesterday(lastEntryDate)) return 0;
 
         let currentStreak = 1;
         for (let i = 1; i < uniqueDays.length; i++) {
-            // Fix: Appending 'T00:00:00' ensures date-only strings are parsed in local time, not UTC.
             const currentDate = new Date(uniqueDays[i-1] + 'T00:00:00');
             const previousDate = new Date(uniqueDays[i] + 'T00:00:00');
             if (differenceInCalendarDays(currentDate, previousDate) === 1) {
                 currentStreak++;
             } else {
-                break; // Streak broken
+                break;
             }
         }
-        
         return currentStreak;
     }, [journalHistory]);
 
@@ -166,6 +162,7 @@ const App: React.FC = () => {
                             themeMode={themeMode}
                             setThemeMode={setThemeMode}
                             currentUser={currentUser}
+                            aiStatus={aiStatus}
                         />;
             case Screen.Privacy:
                 return <PrivacyPolicyScreen onBack={() => setActiveScreen(Screen.Settings)} />
