@@ -5,6 +5,7 @@ import HomeScreen from './components/screens/HomeScreen';
 import ProgressScreen from './components/screens/ProgressScreen';
 import SettingsScreen from './components/screens/SettingsScreen';
 import PrivacyPolicyScreen from './components/screens/PrivacyPolicyScreen';
+import LiveConversationScreen from './components/screens/LiveConversationScreen';
 import BottomNav from './components/shared/BottomNav';
 import PremiumModal from './components/shared/PremiumModal';
 import ConfirmationModal from './components/shared/ConfirmationModal';
@@ -122,6 +123,7 @@ const App: React.FC = () => {
             return 0;
         }
 
+        // Fix: Appending 'T00:00:00' ensures date-only strings are parsed in local time, not UTC.
         const lastEntryDate = new Date(uniqueDays[0] + 'T00:00:00');
         if (!isToday(lastEntryDate) && !isYesterday(lastEntryDate)) {
             return 0; // Streak broken
@@ -129,6 +131,7 @@ const App: React.FC = () => {
 
         let currentStreak = 1;
         for (let i = 1; i < uniqueDays.length; i++) {
+            // Fix: Appending 'T00:00:00' ensures date-only strings are parsed in local time, not UTC.
             const currentDate = new Date(uniqueDays[i-1] + 'T00:00:00');
             const previousDate = new Date(uniqueDays[i] + 'T00:00:00');
             if (differenceInCalendarDays(currentDate, previousDate) === 1) {
@@ -144,9 +147,11 @@ const App: React.FC = () => {
     const renderScreen = () => {
         switch (activeScreen) {
             case Screen.Home:
-                return <HomeScreen addJournalEntry={addJournalEntry} currentUser={currentUser} />;
+                return <HomeScreen addJournalEntry={addJournalEntry} currentUser={currentUser} onNavigate={setActiveScreen} />;
             case Screen.Progress:
                 return <ProgressScreen journalHistory={journalHistory} streak={streak} isPremium={isPremium} onUpgradeRequest={() => setIsPremiumModalOpen(true)} />;
+            case Screen.LiveConversation:
+                return <LiveConversationScreen onBack={() => setActiveScreen(Screen.Home)} />;
             case Screen.Settings:
                 return <SettingsScreen 
                             isPremium={isPremium} 
@@ -165,7 +170,7 @@ const App: React.FC = () => {
             case Screen.Privacy:
                 return <PrivacyPolicyScreen onBack={() => setActiveScreen(Screen.Settings)} />
             default:
-                return <HomeScreen addJournalEntry={addJournalEntry} currentUser={currentUser} />;
+                return <HomeScreen addJournalEntry={addJournalEntry} currentUser={currentUser} onNavigate={setActiveScreen} />;
         }
     };
     
@@ -177,7 +182,7 @@ const App: React.FC = () => {
         )
     }
 
-    const isNavVisible = activeScreen !== Screen.Privacy;
+    const isNavVisible = activeScreen !== Screen.Privacy && activeScreen !== Screen.LiveConversation;
 
     return (
         <div className="bg-bkg-light dark:bg-bkg-dark min-h-screen text-text-primary-light dark:text-text-primary-dark font-sans">

@@ -4,6 +4,7 @@ export enum Screen {
     Progress = 'progress',
     Settings = 'settings',
     Privacy = 'privacy',
+    LiveConversation = 'live',
 }
 
 export interface NavItem {

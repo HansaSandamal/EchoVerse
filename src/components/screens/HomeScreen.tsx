@@ -7,6 +7,7 @@ import { getAIAnalysisForEntry } from '../../services/geminiService';
 interface HomeScreenProps {
     addJournalEntry: (entry: Omit<JournalEntry, 'date'>) => void;
     currentUser: User | null;
+    onNavigate: (screen: Screen) => void;
 }
 
 type EntryMode = 'choice' | 'voice' | 'manual' | 'success';
@@ -25,7 +26,7 @@ const ScreenHeader = ({ onBack, title }: { onBack: () => void; title: string }) 
 );
 
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser, onNavigate }) => {
     const [entryMode, setEntryMode] = useState<EntryMode>('choice');
     const [note, setNote] = useState<string>('');
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -194,7 +195,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
             default:
                 return (
                     <div className="w-full space-y-4 animate-fade-in-up">
-                        <button onClick={() => setEntryMode('voice')} className="w-full text-left p-6 bg-purple-500/10 hover:bg-purple-500/20 rounded-xl border-2 border-transparent hover:border-purple-400 transition-all duration-300 group hover:shadow-xl hover:scale-[1.02]">
+                        <button onClick={() => setEntryMode('voice')} className="w-full text-left p-4 bg-purple-500/10 hover:bg-purple-500/20 rounded-xl border-2 border-transparent hover:border-purple-400 transition-all duration-300 group hover:shadow-xl hover:scale-[1.02]">
                             <div className="flex items-center">
                                 <div className="p-3 bg-purple-500/20 rounded-full mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-500 dark:text-purple-300" fill="currentColor" viewBox="0 0 16 16"><path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5z"/><path d="M10 8a2 2 0 1 1-4 0V3a2 2 0 1 1 4 0v5zM8 0a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V3a3 3 0 0 0-3-3z"/></svg>
@@ -206,7 +207,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-500 dark:text-purple-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
                             </div>
                         </button>
-                         <button onClick={() => setEntryMode('manual')} className="w-full text-left p-6 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-xl border-2 border-transparent hover:border-indigo-400 transition-all duration-300 group hover:shadow-xl hover:scale-[1.02]">
+                         <button onClick={() => setEntryMode('manual')} className="w-full text-left p-4 bg-indigo-500/10 hover:bg-indigo-500/20 rounded-xl border-2 border-transparent hover:border-indigo-400 transition-all duration-300 group hover:shadow-xl hover:scale-[1.02]">
                             <div className="flex items-center">
                                 <div className="p-3 bg-indigo-500/20 rounded-full mr-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-500 dark:text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -218,6 +219,18 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-500 dark:text-indigo-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
                             </div>
                         </button>
+                         <button onClick={() => onNavigate(Screen.LiveConversation)} className="w-full text-left p-4 bg-sky-500/10 hover:bg-sky-500/20 rounded-xl border-2 border-transparent hover:border-sky-400 transition-all duration-300 group hover:shadow-xl hover:scale-[1.02]">
+                            <div className="flex items-center">
+                                <div className="p-3 bg-sky-500/20 rounded-full mr-4">
+                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-sky-500 dark:text-sky-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg text-text-primary-light dark:text-text-primary-dark">Start Live Conversation</h3>
+                                    <p className="text-sm text-text-secondary-light dark:text-text-secondary-dark">Talk with your AI journal in real-time.</p>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-sky-500 dark:text-sky-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                            </div>
+                        </button>
                     </div>
                 );
         }
@@ -227,7 +240,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser })
         <div className="space-y-8">
             <Greeting />
             
-            <div className="relative p-6 bg-gradient-to-br from-content-light to-bkg-light dark:from-content-dark dark:to-bkg-dark rounded-2xl shadow-lg min-h-[350px] flex flex-col justify-center items-center text-center">
+            <div className="relative p-4 bg-gradient-to-br from-content-light to-bkg-light dark:from-content-dark dark:to-bkg-dark rounded-2xl shadow-lg min-h-[350px] flex flex-col justify-center items-center text-center">
                 <div key={entryMode} className="w-full">
                      {renderContent()}
                 </div>
