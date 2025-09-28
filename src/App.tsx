@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Screen, JournalEntry, ColorTheme, ThemeMode, User } from './types';
-import LoginScreen from './components/screens/LoginScreen';
-import HomeScreen from './components/screens/HomeScreen';
-import ProgressScreen from './components/screens/ProgressScreen';
-import SettingsScreen from './components/screens/SettingsScreen';
-import PrivacyPolicyScreen from './components/screens/PrivacyPolicyScreen';
-import LiveConversationScreen from './components/screens/LiveConversationScreen';
-import BottomNav from './components/shared/BottomNav';
-import PremiumModal from './components/shared/PremiumModal';
-import ConfirmationModal from './components/shared/ConfirmationModal';
-import { NAV_ITEMS } from './constants';
+import { Screen, JournalEntry, ColorTheme, ThemeMode, User } from './types.ts';
+import LoginScreen from './components/screens/LoginScreen.tsx';
+import HomeScreen from './components/screens/HomeScreen.tsx';
+import ProgressScreen from './components/screens/ProgressScreen.tsx';
+import SettingsScreen from './components/screens/SettingsScreen.tsx';
+import PrivacyPolicyScreen from './components/screens/PrivacyPolicyScreen.tsx';
+import LiveConversationScreen from './components/screens/LiveConversationScreen.tsx';
+import BottomNav from './components/shared/BottomNav.tsx';
+import PremiumModal from './components/shared/PremiumModal.tsx';
+import ConfirmationModal from './components/shared/ConfirmationModal.tsx';
+import { NAV_ITEMS } from './constants.tsx';
 import { isToday, isYesterday, differenceInCalendarDays } from 'date-fns';
-import { checkAIServiceAvailability } from './services/geminiService';
+import { checkAIServiceAvailability } from './services/geminiService.ts';
 
 // Custom hook for persisting state to localStorage
 const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
@@ -51,11 +51,10 @@ const App: React.FC = () => {
     const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
     const [aiStatus, setAiStatus] = useState<AIStatus>('checking');
 
-    // Check AI Service availability on startup
+    // Check AI Service availability on startup (now a synchronous check)
     useEffect(() => {
-        checkAIServiceAvailability().then(isAvailable => {
-            setAiStatus(isAvailable ? 'available' : 'unavailable');
-        });
+        const isAvailable = checkAIServiceAvailability();
+        setAiStatus(isAvailable ? 'available' : 'unavailable');
     }, []);
 
     // Apply color theme class to body

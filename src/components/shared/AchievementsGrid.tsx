@@ -1,7 +1,7 @@
 import React from 'react';
-import { JournalEntry } from '../../types';
-import { ACHIEVEMENTS } from '../../constants';
-import Badge from './Badge';
+import { JournalEntry } from '../../types.ts';
+import { ACHIEVEMENTS } from '../../constants.tsx';
+import Badge from './Badge.tsx';
 
 interface AchievementsGridProps {
     journalHistory: JournalEntry[];

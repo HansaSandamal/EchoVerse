@@ -1,5 +1,5 @@
 import React from 'react';
-import { Screen, NavItem } from '../../types';
+import { Screen, NavItem } from '../../types.ts';
 
 interface BottomNavProps {
     items: NavItem[];

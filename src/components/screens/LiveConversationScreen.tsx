@@ -110,19 +110,9 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
         setTranscript([]);
         setErrorMessage('');
         
-        let liveApiKey: string;
-        try {
-            const response = await fetch('/api/gemini-proxy?action=get-live-key');
-            if (!response.ok) {
-                 const errorData = await response.json();
-                 throw new Error(errorData.error || 'Could not fetch Live API key.');
-            }
-            const data = await response.json();
-            liveApiKey = data.apiKey;
-            if (!liveApiKey) throw new Error('API key was not returned from the server.');
-        } catch (err: any) {
-            console.error(err);
-            setErrorMessage(err.message || "Could not connect to AI service. Please ensure it's configured correctly.");
+        const liveApiKey = process.env.API_KEY;
+        if (!liveApiKey) {
+            setErrorMessage("AI Service is unavailable. Please ensure the API Key is configured.");
             setStatus('error');
             return;
         }
@@ -253,6 +243,7 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                 )}
                  {status === 'connecting' && (
                     <div className="flex flex-col items-center">
+                        {/* FIX: Removed duplicate viewBox attribute from SVG element. */}
                         <svg className="animate-spin h-8 w-8 text-accent-light dark:text-accent-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                         <p className="mt-2 text-text-secondary-light dark:text-text-secondary-dark">Connecting...</p>
                     </div>

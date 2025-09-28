@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService';
-import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types';
-import { AIStatus } from '../../App'; // Import AIStatus type
+import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService.ts';
+import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types.ts';
+import { AIStatus } from '../../App.tsx';
 
 interface SettingsScreenProps {
     isPremium: boolean;

@@ -1,4 +1,4 @@
-import { JournalEntry } from '../types';
+import { JournalEntry } from '../types.ts';
 import { format } from 'date-fns';
 
 interface SmartReminderParams {

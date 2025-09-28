@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { User } from '../../types';
+import { User } from '../../types.ts';
 
 declare global {
     interface Window {
