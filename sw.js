@@ -13,21 +13,18 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        // More robust caching that doesn't fail the whole installation
-        // if one asset is missing.
+        // Adding a filter for successful fetches to make caching more robust.
         const cachePromises = ASSETS_TO_CACHE.map(assetUrl => {
             return fetch(assetUrl)
                 .then(response => {
                     if (response.ok) {
                         return cache.put(assetUrl, response);
                     }
-                    console.warn(`Skipping caching for ${assetUrl} - ${response.statusText}`);
-                    // Resolve even if it fails, so Promise.all doesn't reject.
+                    console.warn(`Skipping caching for ${assetUrl} - ${response.status}`);
                     return Promise.resolve();
                 })
                 .catch(err => {
                     console.warn(`Failed to fetch ${assetUrl} for caching.`, err);
-                    return Promise.resolve();
                 });
         });
         return Promise.all(cachePromises);
@@ -53,6 +50,11 @@ self.addEventListener('activate', event => {
 
 // Fetch event: serve assets from cache first, then network
 self.addEventListener('fetch', event => {
+  // We only want to handle GET requests
+  if (event.request.method !== 'GET') {
+      return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -64,8 +66,9 @@ self.addEventListener('fetch', event => {
         // Not in cache - fetch from network
         return fetch(event.request).then(
           response => {
-            // Check if we received a valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
+            // Check if we received a valid response.
+            // Don't cache opaque responses (from CDNs without CORS).
+            if (!response || response.status !== 200 || response.type === 'opaque') {
               return response;
             }
 
@@ -77,12 +80,24 @@ self.addEventListener('fetch', event => {
 
             caches.open(CACHE_NAME)
               .then(cache => {
-                cache.put(event.request, responseToCache);
+                // We don't want to cache API requests, etc.
+                if (event.request.url.startsWith('http')) {
+                   cache.put(event.request, responseToCache);
+                }
               });
 
             return response;
           }
-        );
+        ).catch(err => {
+            // If fetch fails (e.g., offline), and it's a navigation request,
+            // you could return a fallback offline page.
+            console.error('Fetch failed; returning offline page instead.', err);
+            // For now, we just let the browser handle the error.
+            return new Response('Network error happened', {
+                status: 408,
+                headers: { 'Content-Type': 'text/plain' },
+            });
+        });
       })
     );
 });

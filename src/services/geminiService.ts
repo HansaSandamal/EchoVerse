@@ -1,18 +1,14 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { JournalEntry, DetectedMood, AIAnalysisResult } from './types';
+import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types';
 
-// Fix: Use `process.env.API_KEY` to access the API key as per the coding guidelines,
-// which also resolves the TypeScript error for `import.meta.env`.
 const apiKey = process.env.API_KEY;
 
 if (!apiKey) {
-  // Fix: Updated warning message to reflect the correct environment variable name.
   console.warn("API_KEY environment variable not set. AI features will be mocked.");
 }
 
 const ai = apiKey ? new GoogleGenAI({ apiKey: apiKey }) : null;
 
-// Export a status check for the rest of the app to use, especially for debugging.
 export const isAIServiceAvailable = !!ai;
 
 const MOCK_ANALYSIS: AIAnalysisResult = {
@@ -56,7 +52,6 @@ const analysisSchema = {
 
 export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisResult> => {
     if (!ai) {
-        // Fix: Updated error message to reference the correct environment variable name.
         console.error("Gemini AI service is not available. Ensure API_KEY is set in the environment.");
         return {
             ...MOCK_ANALYSIS,
@@ -96,20 +91,16 @@ export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisRes
 };
 
 export const getAIConnections = async (history: JournalEntry[]): Promise<string> => {
-    // If AI is not available (e.g., missing API key), return a clear error message.
     if (!ai) {
-        // Fix: Updated error message to reference the correct environment variable name.
         console.error("Gemini AI service is not available. Ensure API_KEY is set in the environment.");
         return "The AI insight service is currently unavailable. This is likely due to a missing API key in the application's configuration.";
     }
 
-    // If there aren't enough entries for a meaningful analysis, inform the user.
     if (history.length < 3) {
         return "You need at least 3 journal entries for me to find connections. Keep up your journaling habit!";
     }
     
     try {
-        // Create a concise summary of the last 10 entries to send to the model
         const historySummary = history.slice(-10).map(entry => 
             `Date: ${entry.date.substring(0,10)}\nDetected Mood: ${entry.detectedMood}\nSummary: ${entry.summary}\nThemes: ${entry.themes.join(', ')}`
         ).join('\n\n---\n\n');
@@ -136,7 +127,6 @@ export const getAIConnections = async (history: JournalEntry[]): Promise<string>
         
         const insightText = response.text.trim();
 
-        // Handle cases where the model might return an empty response
         if (!insightText) {
              console.warn("AI returned an empty insight for 'Connect the Dots'.");
              return "I looked through your recent entries, but couldn't find a clear connection just yet. Keep journaling, and I'll try again soon!";

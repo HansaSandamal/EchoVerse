@@ -1,12 +1,8 @@
-
-
 import React, { useState } from 'react';
 import { JournalEntry, MoodOption } from '../../types';
 import ProgressChart from '../shared/ProgressChart';
 import StreakTracker from '../shared/StreakTracker';
 import AchievementsGrid from '../shared/AchievementsGrid';
-// Fix: Use named imports from date-fns to resolve module resolution errors.
-// Fix: Removed `parseISO` import as it's not available in the project's version of date-fns.
 import { format } from 'date-fns';
 import { getAIConnections } from '../../services/geminiService';
 import { MOOD_OPTIONS } from '../../constants';
@@ -99,7 +95,6 @@ const ProgressScreen: React.FC<ProgressScreenProps> = ({ journalHistory, streak,
                             <span className="text-2xl mr-3">{emoji}</span>
                             <div>
                                 <p className="font-bold text-text-primary-light dark:text-text-primary-dark">{entry.detectedMood}</p>
-                                {/* Fix: Replaced `parseISO` with `new Date()` to correctly parse ISO date strings. */}
                                 <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">{format(new Date(entry.date), 'MMM d, h:mm a')}</p>
                             </div>
                         </div>

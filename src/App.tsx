@@ -9,8 +9,6 @@ import BottomNav from './components/shared/BottomNav';
 import PremiumModal from './components/shared/PremiumModal';
 import ConfirmationModal from './components/shared/ConfirmationModal';
 import { NAV_ITEMS } from './constants';
-// Fix: Use named imports from date-fns to resolve module resolution errors.
-// Fix: Removed `parseISO` import as it's not available in the project's version of date-fns.
 import { isToday, isYesterday, differenceInCalendarDays } from 'date-fns';
 
 // Custom hook for persisting state to localStorage
@@ -124,7 +122,6 @@ const App: React.FC = () => {
             return 0;
         }
 
-        // Fix: Replaced `parseISO` with `new Date()`. Appending 'T00:00:00' ensures date-only strings are parsed in local time, not UTC.
         const lastEntryDate = new Date(uniqueDays[0] + 'T00:00:00');
         if (!isToday(lastEntryDate) && !isYesterday(lastEntryDate)) {
             return 0; // Streak broken
@@ -132,7 +129,6 @@ const App: React.FC = () => {
 
         let currentStreak = 1;
         for (let i = 1; i < uniqueDays.length; i++) {
-            // Fix: Replaced `parseISO` with `new Date()`. Appending 'T00:00:00' ensures date-only strings are parsed in local time, not UTC.
             const currentDate = new Date(uniqueDays[i-1] + 'T00:00:00');
             const previousDate = new Date(uniqueDays[i] + 'T00:00:00');
             if (differenceInCalendarDays(currentDate, previousDate) === 1) {
