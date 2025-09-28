@@ -1,6 +1,8 @@
 import React from 'react';
-import { JournalEntry } from '../../types';
-import { ACHIEVEMENTS } from '../../constants';
+// FIX: Add file extension to import path to resolve module.
+import { JournalEntry } from '../../types.ts';
+// FIX: Add file extension to import path to resolve module.
+import { ACHIEVEMENTS } from '../../constants.tsx';
 import Badge from './Badge';
 
 interface AchievementsGridProps {

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService';
-import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types';
+// FIX: Add file extension to import path to resolve module.
+import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types.ts';
 // Fix: Import the async check function instead of a non-existent constant.
-import { checkAIServiceAvailability } from '../../services/geminiService';
+// FIX: Add file extension to import path to resolve module.
+import { checkAIServiceAvailability } from '../../services/geminiService.ts';
 
 interface SettingsScreenProps {
     isPremium: boolean;

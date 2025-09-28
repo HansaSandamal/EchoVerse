@@ -1,5 +1,6 @@
 import React from 'react';
-import { Screen, NavItem } from '../../types';
+// FIX: Add file extension to import path to resolve module.
+import { Screen, NavItem } from '../../types.ts';
 
 interface BottomNavProps {
     items: NavItem[];

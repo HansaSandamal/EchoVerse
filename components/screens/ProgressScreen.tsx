@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { JournalEntry, MoodOption } from '../../types';
+// FIX: Add file extension to import path to resolve module.
+import { JournalEntry, MoodOption } from '../../types.ts';
 import ProgressChart from '../shared/ProgressChart';
 import StreakTracker from '../shared/StreakTracker';
 import AchievementsGrid from '../shared/AchievementsGrid';
 import { format } from 'date-fns';
-import { getAIConnections } from '../../services/geminiService';
-import { MOOD_OPTIONS } from '../../constants';
+// FIX: Add file extension to import path to resolve module.
+import { getAIConnections } from '../../services/geminiService.ts';
+// FIX: Add file extension to import path to resolve module.
+import { MOOD_OPTIONS } from '../../constants.tsx';
 
 interface ProgressScreenProps {
     journalHistory: JournalEntry[];

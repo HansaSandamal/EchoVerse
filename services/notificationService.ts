@@ -1,4 +1,5 @@
-import { JournalEntry } from '../types';
+// FIX: Add file extension to import path to resolve module.
+import { JournalEntry } from '../types.ts';
 import { format } from 'date-fns';
 
 interface SmartReminderParams {

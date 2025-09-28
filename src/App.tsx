@@ -58,14 +58,15 @@ const App: React.FC = () => {
         });
     }, []);
 
-    // Apply color theme class
+    // Apply color theme class to body
     useEffect(() => {
-        document.body.classList.remove('theme-indigo', 'theme-forest', 'theme-sunset');
-        document.body.classList.add(`theme-${colorTheme}`);
+        const body = window.document.body;
+        body.classList.remove('theme-indigo', 'theme-forest', 'theme-sunset');
+        body.classList.add(`theme-${colorTheme}`);
     }, [colorTheme]);
 
 
-    // Apply light/dark mode class
+    // Apply light/dark mode class to html element
     useEffect(() => {
         const root = window.document.documentElement;
         const isDark =

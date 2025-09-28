@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { JournalEntry, Screen, AIAnalysisResult, DetectedMood, User } from '../../types';
+// FIX: Add file extension to import path to resolve module.
+import { JournalEntry, Screen, AIAnalysisResult, DetectedMood, User } from '../../types.ts';
 import VoiceRecorder from '../shared/VoiceRecorder';
 import MoodSelector from '../shared/MoodSelector';
-import { getAIAnalysisForEntry } from '../../services/geminiService';
+// FIX: Add file extension to import path to resolve module.
+import { getAIAnalysisForEntry } from '../../services/geminiService.ts';
 
 interface HomeScreenProps {
     addJournalEntry: (entry: Omit<JournalEntry, 'date'>) => void;
