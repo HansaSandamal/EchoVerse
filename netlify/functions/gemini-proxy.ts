@@ -26,8 +26,23 @@ const analysisSchema = {
 const handler: Handler = async (event: HandlerEvent) => {
     const apiKey = process.env.API_KEY;
 
-    // Health check endpoint
+    // GET requests are for health checks or fetching the Live API key
     if (event.httpMethod === 'GET') {
+        const action = event.queryStringParameters?.action;
+
+        // Securely provide the API key only for the Live API feature
+        if (action === 'get-live-key') {
+            if (!apiKey) {
+                return { statusCode: 500, body: JSON.stringify({ error: 'API key not configured on the server.' }) };
+            }
+            return {
+                statusCode: 200,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ apiKey: apiKey }),
+            };
+        }
+        
+        // Default GET is the health check for general AI service availability
         return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json' },

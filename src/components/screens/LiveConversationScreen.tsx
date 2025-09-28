@@ -1,12 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-// Fix: Remove non-exported 'LiveSession' type.
-// @google/genai-api-import-fix: Use checkAIServiceAvailability for async check instead of isAIServiceAvailable.
 import { GoogleGenAI, LiveServerMessage, Modality, Blob } from '@google/genai';
-import { checkAIServiceAvailability } from '../../services/geminiService';
 
 // --- Audio Helper Functions (as per Gemini API guidelines) ---
 
-// Decodes base64 string to Uint8Array
 function decode(base64: string): Uint8Array {
     const binaryString = atob(base64);
     const len = binaryString.length;
@@ -17,7 +13,6 @@ function decode(base64: string): Uint8Array {
     return bytes;
 }
 
-// Decodes raw PCM audio data into an AudioBuffer
 async function decodeAudioData(
     data: Uint8Array,
     ctx: AudioContext,
@@ -27,7 +22,6 @@ async function decodeAudioData(
     const dataInt16 = new Int16Array(data.buffer);
     const frameCount = dataInt16.length / numChannels;
     const buffer = ctx.createBuffer(numChannels, frameCount, sampleRate);
-
     for (let channel = 0; channel < numChannels; channel++) {
         const channelData = buffer.getChannelData(channel);
         for (let i = 0; i < frameCount; i++) {
@@ -37,7 +31,6 @@ async function decodeAudioData(
     return buffer;
 }
 
-// Encodes Uint8Array to base64 string
 function encode(bytes: Uint8Array): string {
     let binary = '';
     const len = bytes.byteLength;
@@ -47,7 +40,6 @@ function encode(bytes: Uint8Array): string {
     return btoa(binary);
 }
 
-// Creates a Gemini API-compatible Blob from audio data
 function createBlob(data: Float32Array): Blob {
     const l = data.length;
     const int16 = new Int16Array(l);
@@ -60,37 +52,28 @@ function createBlob(data: Float32Array): Blob {
     };
 }
 
-
 // --- Component ---
 
 interface LiveConversationScreenProps {
     onBack: () => void;
 }
 
-// Fix: Add optional 'isFinal' property to correctly manage transcript state.
 type ConversationTurn = {
     speaker: 'user' | 'model';
     text: string;
     id: number;
-    isFinal?: boolean;
+    isFinal: boolean;
 };
 
-// @google/genai-api-feature-fix: Add 'checking' to status to handle async initialization.
-type Status = 'idle' | 'connecting' | 'active' | 'error' | 'checking';
+type Status = 'idle' | 'connecting' | 'active' | 'error';
 
 let turnCounter = 0;
-// @google/genai-api-refactor: Move AI client initialization inside component to support async check.
 
 const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack }) => {
-    // @google/genai-api-refactor: Initialize status to 'checking' for async AI service check.
-    const [status, setStatus] = useState<Status>('checking');
+    const [status, setStatus] = useState<Status>('idle');
     const [transcript, setTranscript] = useState<ConversationTurn[]>([]);
     const [errorMessage, setErrorMessage] = useState<string>('');
     
-    // @google/genai-api-refactor: Use a ref for the AI client instance.
-    const aiRef = useRef<GoogleGenAI | null>(null);
-
-    // Fix: Replace 'LiveSession' with 'any' as it is not an exported type.
     const sessionPromiseRef = useRef<Promise<any> | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
     const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -98,22 +81,6 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
     const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
     const sourcesRef = useRef(new Set<AudioBufferSourceNode>());
     const nextStartTimeRef = useRef(0);
-
-    // @google/genai-api-refactor: Check for AI service availability and initialize client on mount.
-    useEffect(() => {
-        const initializeAI = async () => {
-            const isAvailable = await checkAIServiceAvailability();
-            if (isAvailable) {
-                // The API key must be available on the client for the Live API to work.
-                aiRef.current = new GoogleGenAI({ apiKey: process.env.API_KEY });
-                setStatus('idle');
-            } else {
-                setErrorMessage("AI Service is not available. Please ensure the API Key is correctly configured in your deployment environment.");
-                setStatus('error');
-            }
-        };
-        initializeAI();
-    }, []);
 
     const cleanup = useCallback(() => {
         console.log('Cleaning up resources...');
@@ -135,21 +102,33 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
     }, []);
 
     useEffect(() => {
-        // Cleanup on component unmount
         return () => cleanup();
     }, [cleanup]);
 
     const startConversation = async () => {
-        if (!aiRef.current) {
-            setErrorMessage("AI Service is not available. Ensure the API Key is configured.");
-            setStatus('error');
-            return;
-        }
-
         setStatus('connecting');
         setTranscript([]);
         setErrorMessage('');
         
+        let liveApiKey: string;
+        try {
+            const response = await fetch('/api/gemini-proxy?action=get-live-key');
+            if (!response.ok) {
+                 const errorData = await response.json();
+                 throw new Error(errorData.error || 'Could not fetch Live API key.');
+            }
+            const data = await response.json();
+            liveApiKey = data.apiKey;
+            if (!liveApiKey) throw new Error('API key was not returned from the server.');
+        } catch (err: any) {
+            console.error(err);
+            setErrorMessage(err.message || "Could not connect to AI service. Please ensure it's configured correctly.");
+            setStatus('error');
+            return;
+        }
+
+        const ai = new GoogleGenAI({ apiKey: liveApiKey });
+
         try {
             streamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
         } catch (err) {
@@ -159,12 +138,10 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
             return;
         }
 
-        // Fix: Add 'as any' to handle vendor-prefixed 'webkitAudioContext'.
         inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
-        // Fix: Add 'as any' to handle vendor-prefixed 'webkitAudioContext'.
         outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
 
-        sessionPromiseRef.current = aiRef.current.live.connect({
+        sessionPromiseRef.current = ai.live.connect({
             model: 'gemini-2.5-flash-native-audio-preview-09-2025',
             callbacks: {
                 onopen: () => {
@@ -182,9 +159,7 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                     scriptProcessorRef.current.connect(inputAudioContextRef.current!.destination);
                 },
                 onmessage: async (message: LiveServerMessage) => {
-                    // Handle transcription
                     if (message.serverContent?.inputTranscription) {
-                        // Fix: The 'isFinal' property does not exist on the 'Transcription' type.
                         const { text } = message.serverContent.inputTranscription;
                         setTranscript(prev => {
                             const last = prev[prev.length - 1];
@@ -195,7 +170,6 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                         });
                     }
                     if (message.serverContent?.outputTranscription) {
-                        // Fix: The 'isFinal' property does not exist on the 'Transcription' type.
                         const { text } = message.serverContent.outputTranscription;
                          setTranscript(prev => {
                             const last = prev[prev.length - 1];
@@ -209,7 +183,6 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                         setTranscript(prev => prev.map(t => ({...t, isFinal: true})))
                     }
 
-                    // Handle audio output
                     const base64Audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
                     if (base64Audio && outputAudioContextRef.current) {
                         const ctx = outputAudioContextRef.current;
@@ -232,7 +205,6 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                 },
                 onclose: (e: CloseEvent) => {
                     console.log('Session closed.');
-                    // Don't cleanup here as endConversation handles it.
                 },
             },
             config: {
@@ -251,7 +223,6 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
 
     return (
         <div className="flex flex-col h-[calc(100vh-2rem)] animate-fade-in-up">
-            {/* Header */}
             <div className="flex items-center justify-between pb-4">
                 <button onClick={status !== 'active' ? onBack : endConversation} className="flex items-center text-accent-light dark:text-accent-dark font-semibold">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -260,7 +231,6 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                 <h1 className="text-xl font-bold text-text-primary-light dark:text-text-primary-dark">Live Conversation</h1>
             </div>
 
-            {/* Transcript */}
             <div className="flex-grow p-4 bg-content-light dark:bg-content-dark rounded-xl overflow-y-auto mb-4">
                 <div className="space-y-4">
                     {transcript.map((turn) => (
@@ -271,10 +241,10 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                         </div>
                     ))}
                      {transcript.length === 0 && status === 'active' && <p className="text-center text-text-secondary-light dark:text-text-secondary-dark">Listening...</p>}
+                     {transcript.length === 0 && status === 'idle' && <p className="text-center text-text-secondary-light dark:text-text-secondary-dark">Press "Start Conversation" to begin.</p>}
                 </div>
             </div>
 
-            {/* Controls & Status */}
             <div className="flex flex-col items-center justify-center p-4">
                 {status === 'idle' && (
                      <button onClick={startConversation} className="px-8 py-3 bg-accent-light dark:bg-accent-dark text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105 active:animate-button-press">
@@ -298,13 +268,6 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                         <button onClick={onBack} className="mt-4 px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full">Go Back</button>
                     </div>
                  )}
-                {/* @google/genai-api-refactor: Add a 'checking' status indicator. */}
-                {status === 'checking' && (
-                    <div className="flex flex-col items-center">
-                        <svg className="animate-spin h-8 w-8 text-accent-light dark:text-accent-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        <p className="mt-2 text-text-secondary-light dark:text-text-secondary-dark">Checking AI Service...</p>
-                    </div>
-                )}
             </div>
         </div>
     );
