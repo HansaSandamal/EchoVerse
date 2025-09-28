@@ -1,7 +1,10 @@
 {
   "name": "echoverse-app",
   "version": "1.0.0",
-  "description": "EchoVerse AI Voice Journal Functions",
+  "description": "EchoVerse AI Voice Journal",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "@google/genai": "^1.21.0"
   },

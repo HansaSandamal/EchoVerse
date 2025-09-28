@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService';
 import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types';
-import { isAIServiceAvailable } from '../../services/geminiService';
+// Fix: Import the async check function instead of a non-existent constant.
+import { checkAIServiceAvailability } from '../../services/geminiService';
 
 interface SettingsScreenProps {
     isPremium: boolean;
@@ -72,6 +73,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
 }) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
     const [reminderTime, setReminderTime] = useState<string | null>(null);
+    // Fix: Add state to manage the AI service availability and fetch it asynchronously.
+    const [isAIServiceAvailable, setIsAIServiceAvailable] = useState(false);
+
+    useEffect(() => {
+        checkAIServiceAvailability().then(setIsAIServiceAvailable);
+    }, []);
 
     useEffect(() => {
         if ('Notification' in window && Notification.permission === 'granted') {
