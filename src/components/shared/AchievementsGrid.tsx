@@ -8,7 +8,7 @@ interface AchievementsGridProps {
     streak: number;
 }
 
-const AchievementsGrid: React.FC<AchievementsGridProps> = ({ journalHistory, streak }) => {
+const AchievementsGrid = ({ journalHistory, streak }: AchievementsGridProps) => {
     return (
         <div>
             <h2 className="font-semibold text-lg mb-4 text-text-primary-light dark:text-text-primary-dark">Achievements</h2>

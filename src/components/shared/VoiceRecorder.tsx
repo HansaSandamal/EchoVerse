@@ -6,7 +6,7 @@ interface VoiceRecorderProps {
 
 type RecordingStatus = 'idle' | 'requesting' | 'recording' | 'denied';
 
-const VoiceRecorder: React.FC<VoiceRecorderProps> = ({ onRecordingComplete }) => {
+const VoiceRecorder = ({ onRecordingComplete }: VoiceRecorderProps) => {
     const [status, setStatus] = useState<RecordingStatus>('idle');
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);

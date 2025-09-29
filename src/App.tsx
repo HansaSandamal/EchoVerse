@@ -37,7 +37,7 @@ const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<R
     return [storedValue, setValue];
 };
 
-const App: React.FC = () => {
+const App = () => {
     const [currentUser, setCurrentUser] = useLocalStorage<User | null>('currentUser', null);
     const [activeScreen, setActiveScreen] = useState<Screen>(Screen.Home);
     const [journalHistory, setJournalHistory] = useLocalStorage<JournalEntry[]>('journalHistory', []);

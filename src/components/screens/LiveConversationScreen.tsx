@@ -69,7 +69,7 @@ type Status = 'idle' | 'connecting' | 'active' | 'error';
 
 let turnCounter = 0;
 
-const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack }) => {
+const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
     const [status, setStatus] = useState<Status>('idle');
     const [transcript, setTranscript] = useState<ConversationTurn[]>([]);
     const [errorMessage, setErrorMessage] = useState<string>('');

@@ -5,7 +5,7 @@ interface InsightCardProps {
     isLoading: boolean;
 }
 
-const InsightCard: React.FC<InsightCardProps> = ({ insight, isLoading }) => {
+const InsightCard = ({ insight, isLoading }: InsightCardProps) => {
     return (
         <div className="p-6 bg-content-light dark:bg-content-dark rounded-2xl shadow-md">
             <div className="flex items-center mb-4">

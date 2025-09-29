@@ -7,7 +7,7 @@ interface ProgressChartProps {
     data: JournalEntry[];
 }
 
-const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
+const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const originalDateISO = payload[0].payload.date;
     return (
@@ -22,7 +22,7 @@ const CustomTooltip: React.FC<any> = ({ active, payload, label }) => {
   return null;
 };
 
-const ProgressChart: React.FC<ProgressChartProps> = ({ data }) => {
+const ProgressChart = ({ data }: ProgressChartProps) => {
     const formattedData = data.map(entry => ({
         ...entry,
         date: entry.date, 

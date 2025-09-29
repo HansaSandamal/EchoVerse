@@ -9,14 +9,14 @@ interface ConfirmationModalProps {
     confirmText?: string;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ 
+const ConfirmationModal = ({ 
     isOpen, 
     onClose, 
     onConfirm, 
     title, 
     message,
     confirmText = "Confirm" 
-}) => {
+}: ConfirmationModalProps) => {
     if (!isOpen) return null;
 
     return (

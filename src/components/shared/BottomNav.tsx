@@ -7,7 +7,7 @@ interface BottomNavProps {
     setActiveScreen: (screen: Screen) => void;
 }
 
-const BottomNav: React.FC<BottomNavProps> = ({ items, activeScreen, setActiveScreen }) => {
+const BottomNav = ({ items, activeScreen, setActiveScreen }: BottomNavProps) => {
     return (
         <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto h-20 bg-content-light/80 dark:bg-content-dark/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700">
             <div className="flex justify-around items-center h-full">

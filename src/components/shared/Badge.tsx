@@ -12,7 +12,7 @@ const LockedIcon = ({ className }: { className: string }) => (
     </svg>
 );
 
-const Badge: React.FC<BadgeProps> = ({ achievement, isUnlocked }) => {
+const Badge = ({ achievement, isUnlocked }: BadgeProps) => {
     return (
         <div className="group relative flex flex-col items-center justify-center text-center">
             <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${isUnlocked ? 'bg-yellow-400/20 text-yellow-500 dark:text-yellow-400' : 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'}`}>

@@ -9,7 +9,7 @@ interface MoodSelectorProps {
     setRating: (rating: number) => void;
 }
 
-const MoodSelector: React.FC<MoodSelectorProps> = ({ selectedMood, setSelectedMood, rating, setRating }) => {
+const MoodSelector = ({ selectedMood, setSelectedMood, rating, setRating }: MoodSelectorProps) => {
     
     const selectedMoodOption = MOOD_OPTIONS.find(option => option.mood === selectedMood);
     

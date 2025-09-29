@@ -26,7 +26,7 @@ const ScreenHeader = ({ onBack, title }: { onBack: () => void; title: string }) 
 );
 
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser, onNavigate }) => {
+const HomeScreen = ({ addJournalEntry, currentUser, onNavigate }: HomeScreenProps) => {
     const [entryMode, setEntryMode] = useState<EntryMode>('choice');
     const [note, setNote] = useState<string>('');
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -111,7 +111,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ addJournalEntry, currentUser, o
         }
     };
     
-    const Greeting: React.FC = () => {
+    const Greeting = () => {
         const hour = new Date().getHours();
         let greetingText;
         if (hour < 12) greetingText = "Good morning";

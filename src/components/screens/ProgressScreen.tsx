@@ -15,7 +15,7 @@ interface ProgressScreenProps {
     onUpgradeRequest: () => void;
 }
 
-const ConnectionsCard: React.FC<{ history: JournalEntry[], isPremium: boolean, onUpgradeRequest: () => void }> = ({ history, isPremium, onUpgradeRequest }) => {
+const ConnectionsCard = ({ history, isPremium, onUpgradeRequest }: { history: JournalEntry[], isPremium: boolean, onUpgradeRequest: () => void }) => {
     const [insight, setInsight] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -67,7 +67,6 @@ const ConnectionsCard: React.FC<{ history: JournalEntry[], isPremium: boolean, o
     );
 };
 
-// FIX: Moved JournalLogItem and moodColorMap outside the ProgressScreen component to prevent re-declaration on each render and resolve the TypeScript error with the 'key' prop.
 const moodColorMap: { [key: string]: { border: string } } = {
     'Happy': { border: 'border-yellow-400' },
     'Calm': { border: 'border-blue-400' },
@@ -79,7 +78,7 @@ const moodColorMap: { [key: string]: { border: string } } = {
     'Neutral': { border: 'border-gray-400' },
 };
 
-const JournalLogItem: React.FC<{ entry: JournalEntry }> = ({ entry }) => {
+const JournalLogItem = ({ entry }: { entry: JournalEntry }) => {
     const moodOption = MOOD_OPTIONS.find(option => option.mood === entry.detectedMood);
     const emoji = moodOption ? moodOption.emoji : '📝';
     const colors = moodColorMap[entry.detectedMood] || moodColorMap['Neutral'];
@@ -111,12 +110,12 @@ const JournalLogItem: React.FC<{ entry: JournalEntry }> = ({ entry }) => {
 };
 
 
-const ProgressScreen: React.FC<ProgressScreenProps> = ({ journalHistory, streak, isPremium, onUpgradeRequest }) => {
+const ProgressScreen = ({ journalHistory, streak, isPremium, onUpgradeRequest }: ProgressScreenProps) => {
     // Filter out any potentially corrupted (null/undefined) entries from local storage.
     const cleanJournalHistory = journalHistory.filter(Boolean);
     const displayedHistory = isPremium ? cleanJournalHistory : cleanJournalHistory.slice(-7);
 
-    const PremiumUpsell: React.FC<{ message: string }> = ({ message }) => (
+    const PremiumUpsell = ({ message }: { message: string }) => (
         <div className="text-center p-8 bg-bkg-light dark:bg-bkg-dark rounded-xl">
             <p className="font-semibold text-text-primary-light dark:text-text-primary-dark">{message}</p>
             <button
@@ -156,7 +155,7 @@ const ProgressScreen: React.FC<ProgressScreenProps> = ({ journalHistory, streak,
                 <h2 className="font-semibold text-lg mb-4 text-text-primary-light dark:text-text-primary-dark">Journal Log</h2>
                 <div className="space-y-3">
                     {displayedHistory.length > 0 ? (
-                        [...displayedHistory].reverse().map((entry: JournalEntry, index) => <JournalLogItem key={index} entry={entry} />)
+                        [...displayedHistory].reverse().map((entry: JournalEntry) => <JournalLogItem key={entry.date} entry={entry} />)
                     ) : (
                         <p className="text-center text-text-secondary-light dark:text-text-secondary-dark p-8">No journal entries yet. Record your first Echo on the Home screen to get started!</p>
                     )}

@@ -4,7 +4,7 @@ interface PrivacyPolicyScreenProps {
     onBack: () => void;
 }
 
-const PrivacyPolicyScreen: React.FC<PrivacyPolicyScreenProps> = ({ onBack }) => {
+const PrivacyPolicyScreen = ({ onBack }: PrivacyPolicyScreenProps) => {
     return (
         <div className="animate-fade-in-up text-text-primary-light dark:text-text-primary-dark">
             <button onClick={onBack} className="flex items-center text-accent-light dark:text-accent-dark font-semibold mb-6">

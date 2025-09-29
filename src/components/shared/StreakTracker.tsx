@@ -4,7 +4,7 @@ interface StreakTrackerProps {
     streak: number;
 }
 
-const StreakTracker: React.FC<StreakTrackerProps> = ({ streak }) => {
+const StreakTracker = ({ streak }: StreakTrackerProps) => {
     return (
         <div className="p-6 bg-content-light dark:bg-content-dark rounded-2xl shadow-md flex items-center justify-between">
             <div>

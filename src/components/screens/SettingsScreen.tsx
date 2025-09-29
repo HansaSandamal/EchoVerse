@@ -19,14 +19,16 @@ interface SettingsScreenProps {
     aiStatus: AIStatus;
 }
 
-const ThemeOption: React.FC<{
+interface ThemeOptionProps {
     theme: ColorTheme;
     name: string;
     gradient: string;
     isActive: boolean;
     isLocked: boolean;
     onSelect: () => void;
-}> = ({ theme, name, gradient, isActive, isLocked, onSelect }) => (
+}
+
+const ThemeOption = ({ theme, name, gradient, isActive, isLocked, onSelect }: ThemeOptionProps) => (
     <div className="text-center">
         <button
             onClick={onSelect}
@@ -43,11 +45,13 @@ const ThemeOption: React.FC<{
     </div>
 );
 
-const ModeOption: React.FC<{
+interface ModeOptionProps {
     label: string;
     isActive: boolean;
     onClick: () => void;
-}> = ({ label, isActive, onClick }) => (
+}
+
+const ModeOption = ({ label, isActive, onClick }: ModeOptionProps) => (
     <button
         onClick={onClick}
         className={`w-full text-center py-2 px-3 rounded-md text-sm font-semibold transition-colors ${isActive ? 'bg-accent-light dark:bg-accent-dark text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700'} active:brightness-95`}
@@ -57,7 +61,7 @@ const ModeOption: React.FC<{
 );
 
 
-const SettingsScreen: React.FC<SettingsScreenProps> = ({
+const SettingsScreen = ({
     isPremium,
     onUpgradeRequest,
     onLogout,
@@ -71,7 +75,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
     setThemeMode,
     currentUser,
     aiStatus
-}) => {
+}: SettingsScreenProps) => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(false);
     const [reminderTime, setReminderTime] = useState<string | null>(null);
 

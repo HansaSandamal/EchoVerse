@@ -6,7 +6,15 @@ interface PremiumModalProps {
     onUpgrade: () => void;
 }
 
-const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onUpgrade }) => {
+interface PlanCardProps {
+    plan: 'pro' | 'plus';
+    title: string;
+    price: string;
+    features: string[];
+    isMostPopular?: boolean;
+}
+
+const PremiumModal = ({ isOpen, onClose, onUpgrade }: PremiumModalProps) => {
     if (!isOpen) return null;
 
     const [selectedPlan, setSelectedPlan] = useState<'pro' | 'plus'>('pro');
@@ -33,13 +41,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onUpgrade 
         "Exclusive App Icons",
     ];
 
-    const PlanCard: React.FC<{
-        plan: 'pro' | 'plus';
-        title: string;
-        price: string;
-        features: string[];
-        isMostPopular?: boolean;
-    }> = ({ plan, title, price, features, isMostPopular = false }) => {
+    const PlanCard = ({ plan, title, price, features, isMostPopular = false }: PlanCardProps) => {
         const isSelected = selectedPlan === plan;
         return (
             <div

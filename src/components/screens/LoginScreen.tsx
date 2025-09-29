@@ -36,7 +36,7 @@ const AppleIcon = ({ className }: { className?: string }) => (
 );
 
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
+const LoginScreen = ({ onLogin }: LoginScreenProps) => {
 
     useEffect(() => {
         const handleGoogleLogin = (response: any) => {
