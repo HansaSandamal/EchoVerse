@@ -1,6 +1,5 @@
 import React from 'react';
-// FIX: Removed file extension from import for proper module resolution.
-import { Screen, NavItem } from '../../types';
+import { Screen, NavItem } from '../../types.ts';
 
 interface BottomNavProps {
     items: NavItem[];

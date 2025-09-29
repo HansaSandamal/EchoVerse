@@ -1,8 +1,7 @@
 import React from 'react';
-// FIX: Removed file extensions from imports for proper module resolution.
-import { JournalEntry } from '../../types';
-import { ACHIEVEMENTS } from '../../constants';
-import Badge from './Badge';
+import { JournalEntry } from '../../types.ts';
+import { ACHIEVEMENTS } from '../../constants.ts';
+import Badge from './Badge.tsx';
 
 interface AchievementsGridProps {
     journalHistory: JournalEntry[];

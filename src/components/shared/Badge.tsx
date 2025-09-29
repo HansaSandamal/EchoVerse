@@ -1,6 +1,5 @@
 import React from 'react';
-// FIX: Removed file extension from import for proper module resolution.
-import { Achievement } from '../../types';
+import { Achievement } from '../../types.ts';
 
 interface BadgeProps {
     achievement: Achievement;

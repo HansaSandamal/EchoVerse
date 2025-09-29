@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-// FIX: Removed file extension from import for proper module resolution.
-import { JournalEntry } from '../../types';
+import { JournalEntry } from '../../types.ts';
 import { format } from 'date-fns';
 
 interface ProgressChartProps {

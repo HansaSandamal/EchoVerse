@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-// FIX: Removed file extension from import for proper module resolution.
-import { User } from '../../types';
+import { User } from '../../types.ts';
 
 declare global {
     interface Window {

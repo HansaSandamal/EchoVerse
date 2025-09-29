@@ -1,6 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-// FIX: Removed file extension from import for proper module resolution.
-import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types';
+import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types.ts';
 
 // Per instructions, assume process.env.API_KEY is available in the execution environment.
 const apiKey = process.env.API_KEY;
