@@ -1,5 +1,6 @@
-// FIX: Import React type to resolve namespace errors.
-import type * as React from 'react';
+// This file contains shared type definitions used across the application.
+// It is intentionally kept free of direct 'react' imports to prevent
+// potential runtime errors in the in-browser transpilation environment.
 
 export type AIStatus = 'checking' | 'available' | 'unavailable';
 
@@ -15,7 +16,9 @@ export enum Screen {
 export interface NavItem {
     screen: Screen;
     label: string;
-    icon: React.FC<{ className: string }>;
+    // A functional component for the icon is expected here.
+    // Using 'any' for the return type to avoid a direct dependency on React/JSX types.
+    icon: (props: { className: string }) => any;
 }
 
 export enum DetectedMood {
@@ -53,7 +56,9 @@ export interface Achievement {
     id: string;
     name: string;
     description: string;
-    icon: React.FC<{ className: string }>;
+    // A functional component for the icon is expected here.
+    // Using 'any' for the return type to avoid a direct dependency on React/JSX types.
+    icon: (props: { className: string }) => any;
     unlockCondition: (stats: { journalHistory: JournalEntry[], streak: number }) => boolean;
 }
 
