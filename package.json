@@ -7,10 +7,10 @@
     "build": "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp manifest.json dist/ && cp sw.js dist/ && cp -r assets dist/ && cp -r src dist/"
   },
   "dependencies": {
-    "@google/genai": "^1.21.0",
-    "date-fns": "^4.1.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "recharts": "^3.2.1"
+    "@google/genai": "0.14.0",
+    "date-fns": "3.6.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "recharts": "2.12.7"
   }
 }

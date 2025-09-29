@@ -1,26 +1,3 @@
 {
-  "short_name": "EchoVerse",
-  "name": "EchoVerse - AI Voice Journal",
-  "description": "An intelligent audio diary that turns your spoken thoughts into structured, actionable insights for self-discovery.",
-  "lang": "en-US",
-  "dir": "ltr",
-  "categories": ["lifestyle", "health", "productivity"],
-  "start_url": "/",
-  "id": "/",
-  "display": "standalone",
-  "display_override": ["standalone"],
-  "scope": "/",
-  "orientation": "portrait-primary",
-  "background_color": "#0F172A",
-  "theme_color": "#1E293B",
-  "icons": [
-    {
-      "src": "assets/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [],
-  "prefer_related_applications": false
+  "__deprecated": "This file is not used. The active manifest is at /manifest.json."
 }

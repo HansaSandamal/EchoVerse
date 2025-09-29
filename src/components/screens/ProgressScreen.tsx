@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { JournalEntry, MoodOption } from '../../types.ts';
 import ProgressChart from '../shared/ProgressChart.tsx';
@@ -78,7 +79,12 @@ const moodColorMap: { [key: string]: { border: string } } = {
     'Neutral': { border: 'border-gray-400' },
 };
 
-const JournalLogItem = ({ entry }: { entry: JournalEntry }) => {
+// FIX: Explicitly type JournalLogItem as a React.FC to correctly handle the 'key' prop, resolving a TypeScript error.
+interface JournalLogItemProps {
+    entry: JournalEntry;
+}
+
+const JournalLogItem: React.FC<JournalLogItemProps> = ({ entry }) => {
     const moodOption = MOOD_OPTIONS.find(option => option.mood === entry.detectedMood);
     const emoji = moodOption ? moodOption.emoji : '📝';
     const colors = moodColorMap[entry.detectedMood] || moodColorMap['Neutral'];
