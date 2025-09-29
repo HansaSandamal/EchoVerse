@@ -1,29 +1,3 @@
-
-import React from 'react';
-// FIX: Add file extension to import path to resolve module.
-import { JournalEntry } from '../../types.ts';
-// FIX: Add file extension to import path to resolve module.
-import { ACHIEVEMENTS } from '../../constants.tsx';
-// FIX: Added .tsx extension to component import
-import Badge from './Badge.tsx';
-
-interface AchievementsGridProps {
-    journalHistory: JournalEntry[];
-    streak: number;
-}
-
-const AchievementsGrid: React.FC<AchievementsGridProps> = ({ journalHistory, streak }) => {
-    return (
-        <div>
-            <h2 className="font-semibold text-lg mb-4 text-text-primary-light dark:text-text-primary-dark">Achievements</h2>
-            <div className="grid grid-cols-4 sm:grid-cols-5 gap-4 p-4 bg-content-light dark:bg-content-dark rounded-2xl shadow-md">
-                {ACHIEVEMENTS.map(achievement => {
-                    const isUnlocked = achievement.unlockCondition({ journalHistory, streak });
-                    return <Badge key={achievement.id} achievement={achievement} isUnlocked={isUnlocked} />;
-                })}
-            </div>
-        </div>
-    );
-};
-
-export default AchievementsGrid;
+// THIS FILE IS DEPRECATED.
+// The active code for this component is located in the /src directory.
+// Please use the file at /src/components/shared/AchievementsGrid.tsx instead.

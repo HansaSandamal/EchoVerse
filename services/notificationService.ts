@@ -1,5 +1,6 @@
 // FIX: Add file extension to import path to resolve module.
-import { JournalEntry } from '../types.ts';
+// FIX: Corrected import path to point to the active types file in the src directory.
+import { JournalEntry } from '../src/types.ts';
 import { format } from 'date-fns';
 
 interface SmartReminderParams {
