@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Screen, JournalEntry, ColorTheme, ThemeMode, User } from './types.ts';
+import { Screen, JournalEntry, ColorTheme, ThemeMode, User, AIStatus } from './types.ts';
 import LoginScreen from './components/screens/LoginScreen.tsx';
 import HomeScreen from './components/screens/HomeScreen.tsx';
 import ProgressScreen from './components/screens/ProgressScreen.tsx';
@@ -36,8 +36,6 @@ const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<R
     };
     return [storedValue, setValue];
 };
-
-export type AIStatus = 'checking' | 'available' | 'unavailable';
 
 const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useLocalStorage<User | null>('currentUser', null);

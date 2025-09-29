@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService.ts';
-import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types.ts';
-import { AIStatus } from '../../App.tsx';
+import { JournalEntry, ColorTheme, ThemeMode, User, AIStatus } from '../../types.ts';
 
 
 interface SettingsScreenProps {
