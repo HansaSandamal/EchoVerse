@@ -255,7 +255,7 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
                  {status === 'error' && (
                      <div className="text-center">
                         <p className="text-red-500 font-semibold">{errorMessage}</p>
-                        <button onClick={onBack} className="mt-4 px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full">Go Back</button>
+                        <button onClick={onBack} className="mt-4 px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 active:animate-button-press transition-colors">Go Back</button>
                     </div>
                  )}
             </div>

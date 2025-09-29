@@ -60,7 +60,7 @@
                         },
                         buttonPress: {
                             '0%': { transform: 'scale(1)' },
-                            '100%': { transform: 'scale(0.97)' },
+                            '100%': { transform: 'scale(0.95)' },
                         }
                     }
                 }
@@ -140,11 +140,13 @@
   }
 }
 </script>
+    <!-- Babel Standalone for in-browser TSX transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="text/babel" data-type="module" src="/index.tsx"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

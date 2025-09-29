@@ -44,7 +44,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onUpgrade 
         return (
             <div
                 onClick={() => setSelectedPlan(plan)}
-                className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 ${isSelected ? 'border-accent-light dark:border-accent-dark scale-105 bg-accent-light/5 dark:bg-accent-dark/5' : 'border-gray-300 dark:border-gray-600'}`}
+                className={`relative border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 ${isSelected ? 'border-accent-light dark:border-accent-dark scale-105 bg-accent-light/5 dark:bg-accent-dark/5' : 'border-gray-300 dark:border-gray-600'} active:scale-[.98]`}
             >
                 {isMostPopular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent-light dark:bg-accent-dark text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -121,7 +121,7 @@ const PremiumModal: React.FC<PremiumModalProps> = ({ isOpen, onClose, onUpgrade 
                 <button 
                     onClick={!isProcessing ? onClose : undefined}
                     disabled={isProcessing}
-                    className="w-full mt-3 py-2 text-sm text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark disabled:opacity-50"
+                    className="w-full mt-3 py-2 text-sm text-text-secondary-light dark:text-text-secondary-dark hover:text-text-primary-light dark:hover:text-text-primary-dark disabled:opacity-50 transition-colors rounded-md active:bg-gray-100 dark:active:bg-gray-800"
                 >
                     Maybe Later
                 </button>

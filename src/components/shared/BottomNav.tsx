@@ -17,7 +17,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ items, activeScreen, setActiveScr
                         <button
                             key={item.screen}
                             onClick={() => setActiveScreen(item.screen)}
-                            className={`flex flex-col items-center justify-center w-full h-full rounded-lg transition-all duration-200 ${isActive ? 'text-accent-light dark:text-accent-dark' : 'text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-light dark:hover:text-accent-dark'}`}
+                            className={`flex flex-col items-center justify-center w-full h-full rounded-lg transition-all duration-200 ${isActive ? 'text-accent-light dark:text-accent-dark' : 'text-text-secondary-light dark:text-text-secondary-dark hover:text-accent-light dark:hover:text-accent-dark'} active:scale-95`}
                         >
                             <div className={`p-3 rounded-full transition-colors ${isActive ? 'bg-accent-light/10 dark:bg-accent-dark/10' : 'bg-transparent'}`}>
                                 <item.icon className="w-7 h-7" />

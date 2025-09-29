@@ -30,7 +30,7 @@ const ThemeOption: React.FC<{
     <div className="text-center">
         <button
             onClick={onSelect}
-            className={`w-16 h-16 rounded-full ${gradient} border-2 transition-all duration-200 ${isActive ? 'border-accent-light dark:border-accent-dark scale-110' : 'border-transparent'}`}
+            className={`w-16 h-16 rounded-full ${gradient} border-2 transition-all duration-200 ${isActive ? 'border-accent-light dark:border-accent-dark scale-110' : 'border-transparent'} active:scale-95`}
             disabled={isLocked}
         >
             {isLocked && (
@@ -50,7 +50,7 @@ const ModeOption: React.FC<{
 }> = ({ label, isActive, onClick }) => (
     <button
         onClick={onClick}
-        className={`w-full text-center py-2 px-3 rounded-md text-sm font-semibold transition-colors ${isActive ? 'bg-accent-light dark:bg-accent-dark text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700'}`}
+        className={`w-full text-center py-2 px-3 rounded-md text-sm font-semibold transition-colors ${isActive ? 'bg-accent-light dark:bg-accent-dark text-white' : 'hover:bg-gray-200 dark:hover:bg-gray-700'} active:brightness-95`}
     >
         {label}
     </button>
@@ -226,8 +226,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">About</h2>
                     <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                        <button onClick={onViewPrivacy} className="w-full text-left py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-md text-text-primary-light dark:text-text-primary-dark transition-colors">Privacy Policy</button>
-                         <a href="mailto:support@echoverse.app" className="block w-full text-left py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-md text-text-primary-light dark:text-text-primary-dark transition-colors">Contact Support</a>
+                        <button onClick={onViewPrivacy} className="w-full text-left py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-md text-text-primary-light dark:text-text-primary-dark transition-colors active:bg-gray-200 dark:active:bg-gray-600">Privacy Policy</button>
+                         <a href="mailto:support@echoverse.app" className="block w-full text-left py-3 hover:bg-gray-100 dark:hover:bg-gray-700/50 rounded-md text-text-primary-light dark:text-text-primary-dark transition-colors active:bg-gray-200 dark:active:bg-gray-600">Contact Support</a>
                     </div>
                 </div>
 
