@@ -6,7 +6,7 @@
   "main": "src/index.tsx",
   "scripts": {
     "start": "echo 'No start script defined'",
-    "build": "mkdir -p dist && cp index.html dist/ && cp manifest.json dist/ && cp sw.js dist/ && cp -r assets dist/ && cp -r src dist/"
+    "build": "mkdir -p dist && cp index.html dist/ && cp index.tsx dist/ && cp manifest.json dist/ && cp sw.js dist/ && cp -r assets dist/ && cp -r src dist/"
   },
   "dependencies": {
     "@google/genai": "^1.21.0",

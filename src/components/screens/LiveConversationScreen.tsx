@@ -110,7 +110,7 @@ const LiveConversationScreen: React.FC<LiveConversationScreenProps> = ({ onBack 
         setTranscript([]);
         setErrorMessage('');
         
-        const liveApiKey = process.env.API_KEY;
+        const liveApiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
         if (!liveApiKey) {
             setErrorMessage("AI Service is unavailable. Please ensure the API Key is configured.");
             setStatus('error');

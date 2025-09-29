@@ -2,7 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types.ts';
 
 // Per instructions, assume process.env.API_KEY is available in the execution environment.
-const apiKey = process.env.API_KEY;
+const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 // The schema for AI analysis, used to ensure a consistent JSON output.
