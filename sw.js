@@ -1,10 +1,38 @@
 
-const CACHE_NAME = 'echoverse-cache-v3';
+
+const CACHE_NAME = 'echoverse-cache-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   'manifest.json',
-  'assets/icon.svg'
+  'assets/icon.svg',
+  // Core App logic
+  'src/index.css',
+  'src/index.tsx',
+  'src/App.tsx',
+  'src/types.ts',
+  'src/constants.tsx',
+  // Services
+  'src/services/geminiService.ts',
+  'src/services/notificationService.ts',
+  // Screens
+  'src/components/screens/LoginScreen.tsx',
+  'src/components/screens/HomeScreen.tsx',
+  'src/components/screens/ProgressScreen.tsx',
+  'src/components/screens/SettingsScreen.tsx',
+  'src/components/screens/PrivacyPolicyScreen.tsx',
+  'src/components/screens/LiveConversationScreen.tsx',
+  // Shared Components
+  'src/components/shared/BottomNav.tsx',
+  'src/components/shared/InsightCard.tsx',
+  'src/components/shared/MoodSelector.tsx',
+  'src/components/shared/ProgressChart.tsx',
+  'src/components/shared/StreakTracker.tsx',
+  'src/components/shared/PremiumModal.tsx',
+  'src/components/shared/AchievementsGrid.tsx',
+  'src/components/shared/Badge.tsx',
+  'src/components/shared/VoiceRecorder.tsx',
+  'src/components/shared/ConfirmationModal.tsx'
 ];
 
 // Install event: cache all core assets

@@ -67,8 +67,6 @@ type ConversationTurn = {
 
 type Status = 'idle' | 'connecting' | 'active' | 'error';
 
-let turnCounter = 0;
-
 const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
     const [status, setStatus] = useState<Status>('idle');
     const [transcript, setTranscript] = useState<ConversationTurn[]>([]);
@@ -81,6 +79,8 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
     const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
     const sourcesRef = useRef(new Set<AudioBufferSourceNode>());
     const nextStartTimeRef = useRef(0);
+    const turnCounter = useRef(0);
+    const isMountedRef = useRef(true);
 
     const cleanup = useCallback(() => {
         console.log('Cleaning up resources...');
@@ -102,18 +102,26 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
     }, []);
 
     useEffect(() => {
-        return () => cleanup();
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+            cleanup();
+        };
     }, [cleanup]);
 
     const startConversation = async () => {
+        if (!isMountedRef.current) return;
         setStatus('connecting');
         setTranscript([]);
         setErrorMessage('');
+        turnCounter.current = 0;
         
         const liveApiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
         if (!liveApiKey) {
-            setErrorMessage("AI Service is unavailable. Please ensure the API Key is configured.");
-            setStatus('error');
+            if (isMountedRef.current) {
+                setErrorMessage("AI Service is unavailable. Please ensure the API Key is configured.");
+                setStatus('error');
+            }
             return;
         }
 
@@ -123,8 +131,10 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
             streamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
         } catch (err) {
             console.error("Microphone access denied:", err);
-            setErrorMessage("Microphone access denied. Please enable microphone permissions in your browser settings.");
-            setStatus('error');
+            if (isMountedRef.current) {
+                setErrorMessage("Microphone access denied. Please enable microphone permissions in your browser settings.");
+                setStatus('error');
+            }
             return;
         }
 
@@ -135,6 +145,7 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
             model: 'gemini-2.5-flash-native-audio-preview-09-2025',
             callbacks: {
                 onopen: () => {
+                    if (!isMountedRef.current) return;
                     setStatus('active');
                     const source = inputAudioContextRef.current!.createMediaStreamSource(streamRef.current!);
                     scriptProcessorRef.current = inputAudioContextRef.current!.createScriptProcessor(4096, 1, 1);
@@ -149,6 +160,8 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
                     scriptProcessorRef.current.connect(inputAudioContextRef.current!.destination);
                 },
                 onmessage: async (message: LiveServerMessage) => {
+                    if (!isMountedRef.current) return;
+                    
                     if (message.serverContent?.inputTranscription) {
                         const { text } = message.serverContent.inputTranscription;
                         setTranscript(prev => {
@@ -156,7 +169,7 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
                             if (last?.speaker === 'user' && !last.isFinal) {
                                 return [...prev.slice(0, -1), { ...last, text: last.text + text }];
                             }
-                            return [...prev, { speaker: 'user', text, id: ++turnCounter, isFinal: false }];
+                            return [...prev, { speaker: 'user', text, id: ++turnCounter.current, isFinal: false }];
                         });
                     }
                     if (message.serverContent?.outputTranscription) {
@@ -166,7 +179,7 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
                             if (last?.speaker === 'model' && !last.isFinal) {
                                 return [...prev.slice(0, -1), { ...last, text: last.text + text }];
                             }
-                            return [...prev, { speaker: 'model', text, id: ++turnCounter, isFinal: false }];
+                            return [...prev, { speaker: 'model', text, id: ++turnCounter.current, isFinal: false }];
                         });
                     }
                     if (message.serverContent?.turnComplete) {
@@ -189,8 +202,10 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
                 },
                 onerror: (e: ErrorEvent) => {
                     console.error('Session error:', e);
-                    setErrorMessage("A connection error occurred. Please try again.");
-                    setStatus('error');
+                    if (isMountedRef.current) {
+                        setErrorMessage("A connection error occurred. Please try again.");
+                        setStatus('error');
+                    }
                     cleanup();
                 },
                 onclose: (e: CloseEvent) => {
@@ -208,7 +223,9 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
 
     const endConversation = () => {
         cleanup();
-        setStatus('idle');
+        if (isMountedRef.current) {
+            setStatus('idle');
+        }
     };
 
     return (

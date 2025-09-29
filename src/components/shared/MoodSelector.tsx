@@ -35,6 +35,7 @@ const MoodSelector = ({ selectedMood, setSelectedMood, rating, setRating }: Mood
                     <button
                         key={mood}
                         onClick={() => setSelectedMood(mood)}
+                        aria-label={`Select mood: ${mood}`}
                         className={`flex items-center justify-center text-4xl p-2 rounded-full aspect-square transform transition-all duration-300 ${
                             selectedMood === mood
                                 ? 'scale-110 grayscale-0 opacity-100'

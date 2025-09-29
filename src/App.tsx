@@ -118,13 +118,9 @@ const App = () => {
         if (cleanHistory.length === 0) return 0;
 
         const sortedHistory = [...cleanHistory].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        const uniqueDays = sortedHistory.reduce((acc, entry) => {
-            if (entry && typeof entry.date === 'string') {
-                const dateStr = entry.date.substring(0, 10);
-                if (!acc.includes(dateStr)) acc.push(dateStr);
-            }
-            return acc;
-        }, [] as string[]);
+        
+        // Use a Set for efficient O(n) unique day calculation
+        const uniqueDays = Array.from(new Set(sortedHistory.map(entry => entry.date.substring(0, 10))));
 
         if (uniqueDays.length === 0) return 0;
         const lastEntryDate = new Date(uniqueDays[0] + 'T00:00:00');
