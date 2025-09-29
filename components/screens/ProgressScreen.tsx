@@ -1,9 +1,11 @@
+
 import React, { useState } from 'react';
 // FIX: Add file extension to import path to resolve module.
 import { JournalEntry, MoodOption } from '../../types.ts';
-import ProgressChart from '../shared/ProgressChart';
-import StreakTracker from '../shared/StreakTracker';
-import AchievementsGrid from '../shared/AchievementsGrid';
+// FIX: Add file extensions to component imports
+import ProgressChart from '../shared/ProgressChart.tsx';
+import StreakTracker from '../shared/StreakTracker.tsx';
+import AchievementsGrid from '../shared/AchievementsGrid.tsx';
 import { format } from 'date-fns';
 // FIX: Add file extension to import path to resolve module.
 import { getAIConnections } from '../../services/geminiService.ts';
@@ -156,7 +158,7 @@ const ProgressScreen: React.FC<ProgressScreenProps> = ({ journalHistory, streak,
                 <h2 className="font-semibold text-lg mb-4 text-text-primary-light dark:text-text-primary-dark">Journal Log</h2>
                 <div className="space-y-3">
                     {displayedHistory.length > 0 ? (
-                        [...displayedHistory].reverse().map((entry, index) => <JournalLogItem key={index} entry={entry} />)
+                        [...displayedHistory].reverse().map((entry: JournalEntry, index) => <JournalLogItem key={index} entry={entry} />)
                     ) : (
                         <p className="text-center text-text-secondary-light dark:text-text-secondary-dark p-8">No journal entries yet. Record your first Echo on the Home screen to get started!</p>
                     )}

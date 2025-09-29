@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 // FIX: Add file extension to import path to resolve module.
 import { JournalEntry, Screen, AIAnalysisResult, DetectedMood, User } from '../../types.ts';
-import VoiceRecorder from '../shared/VoiceRecorder';
-import MoodSelector from '../shared/MoodSelector';
+// FIX: Added .tsx extension to component imports.
+import VoiceRecorder from '../shared/VoiceRecorder.tsx';
+import MoodSelector from '../shared/MoodSelector.tsx';
 // FIX: Add file extension to import path to resolve module.
 import { getAIAnalysisForEntry } from '../../services/geminiService.ts';
 

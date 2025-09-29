@@ -1,3 +1,7 @@
+
+// FIX: Import React type to resolve namespace errors.
+import type * as React from 'react';
+
 export enum Screen {
     Login = 'login',
     Home = 'home',

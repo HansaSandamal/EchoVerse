@@ -1,5 +1,7 @@
 import React from 'react';
+// FIX: Add file extension to import path to resolve module.
 import { JournalEntry } from '../../types.ts';
+// FIX: Add file extension to import path to resolve module.
 import { ACHIEVEMENTS } from '../../constants.tsx';
 import Badge from './Badge.tsx';
 

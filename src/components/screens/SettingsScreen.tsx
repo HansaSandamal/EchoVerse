@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService.ts';
+// FIX: Add file extension to import path to resolve module.
 import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types.ts';
 import { AIStatus } from '../../App.tsx';
+
 
 interface SettingsScreenProps {
     isPremium: boolean;
@@ -155,6 +157,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
             </div>
 
             <div className="space-y-6">
+                 {/* Profile Section */}
                  {currentUser && (
                     <div className="p-4 bg-gradient-to-r from-content-light to-bkg-light dark:from-content-dark dark:to-bkg-dark rounded-xl flex items-center space-x-4">
                         <img src={currentUser.photoURL} alt="Profile" className="w-16 h-16 rounded-full" />
@@ -165,9 +168,11 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     </div>
                 )}
                 
+                {/* Account Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">Account</h2>
                     <div className="mb-3">{renderAIStatus()}</div>
+
                     {isPremium ? (
                          <div className="flex items-center justify-between p-3 bg-green-100 dark:bg-green-500/10 rounded-lg">
                             <p className="font-medium text-green-700 dark:text-green-300">Premium Active ✨</p>
@@ -180,6 +185,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     )}
                 </div>
 
+                {/* Appearance Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                      <h2 className="font-semibold text-lg text-text-primary-light dark:text-text-primary-dark">Appearance</h2>
                      <div className="mt-4">
@@ -200,6 +206,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                      </div>
                 </div>
 
+                {/* Notifications Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">Notifications</h2>
                      <div className="flex items-center justify-between">
@@ -217,6 +224,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     )}
                 </div>
 
+                {/* About Section */}
                 <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <h2 className="font-semibold text-lg mb-3 text-text-primary-light dark:text-text-primary-dark">About</h2>
                     <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -225,6 +233,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     </div>
                 </div>
 
+                {/* Danger Zone */}
                  <div className="p-4 bg-red-100 dark:bg-red-900/20 border border-red-200 dark:border-red-500/30 rounded-xl">
                     <h2 className="font-semibold text-lg mb-2 text-red-700 dark:text-red-300">Danger Zone</h2>
                      <button onClick={onResetRequest} className="w-full p-3 bg-red-200 dark:bg-red-600/30 hover:bg-red-300 dark:hover:bg-red-600/50 text-red-800 dark:text-red-200 font-bold rounded-lg transition-colors active:animate-button-press">
@@ -232,6 +241,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     </button>
                 </div>
 
+                {/* Log Out */}
                  <div className="p-4 bg-content-light dark:bg-content-dark rounded-xl">
                     <button onClick={onLogout} className="w-full p-3 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-text-primary-light dark:text-text-primary-dark font-bold rounded-lg transition-colors active:animate-button-press">
                         Log Out

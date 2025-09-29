@@ -51,10 +51,11 @@ const App: React.FC = () => {
     const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
     const [aiStatus, setAiStatus] = useState<AIStatus>('checking');
 
-    // Check AI Service availability on startup (now a synchronous check)
+    // Check AI Service availability on startup
     useEffect(() => {
-        const isAvailable = checkAIServiceAvailability();
-        setAiStatus(isAvailable ? 'available' : 'unavailable');
+        checkAIServiceAvailability().then(isAvailable => {
+            setAiStatus(isAvailable ? 'available' : 'unavailable');
+        });
     }, []);
 
     // Apply color theme class to body
