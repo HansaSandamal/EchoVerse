@@ -14,6 +14,6 @@
     "isolatedModules": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "netlify/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

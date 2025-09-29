@@ -3,22 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "description": "An intelligent audio diary that turns your spoken thoughts into structured, actionable insights for self-discovery.",
-  "main": "src/index.tsx",
   "scripts": {
-    "start": "echo 'No start script defined'",
-    "build": "mkdir -p dist && cp index.html dist/ && cp index.tsx dist/ && cp manifest.json dist/ && cp sw.js dist/ && cp -r assets dist/ && cp -r src dist/"
+    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp index.tsx dist/ && cp manifest.json dist/ && cp sw.js dist/ && cp -r assets dist/ && cp -r src dist/"
   },
   "dependencies": {
     "@google/genai": "^1.21.0",
     "date-fns": "^4.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "recharts": "^3.2.1",
-    "@netlify/functions": "^4.2.6"
-  },
-  "devDependencies": {
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "typescript": "^5.5.3"
+    "recharts": "^3.2.1"
   }
 }
