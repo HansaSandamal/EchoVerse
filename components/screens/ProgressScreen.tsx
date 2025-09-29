@@ -71,52 +71,53 @@ const ConnectionsCard: React.FC<{ history: JournalEntry[], isPremium: boolean, o
     );
 };
 
+// FIX: Moved JournalLogItem and moodColorMap outside the ProgressScreen component to prevent re-declaration on each render and resolve the TypeScript error with the 'key' prop.
+const moodColorMap: { [key: string]: { border: string } } = {
+    'Happy': { border: 'border-yellow-400' },
+    'Calm': { border: 'border-blue-400' },
+    'Sad': { border: 'border-indigo-400' },
+    'Angry': { border: 'border-red-400' },
+    'Tired': { border: 'border-purple-400' },
+    'Optimistic': { border: 'border-green-400' },
+    'Anxious': { border: 'border-orange-400' },
+    'Neutral': { border: 'border-gray-400' },
+};
+
+const JournalLogItem: React.FC<{ entry: JournalEntry }> = ({ entry }) => {
+    const moodOption = MOOD_OPTIONS.find(option => option.mood === entry.detectedMood);
+    const emoji = moodOption ? moodOption.emoji : '📝';
+    const colors = moodColorMap[entry.detectedMood] || moodColorMap['Neutral'];
+
+    return (
+        <div className={`bg-content-light dark:bg-content-dark rounded-xl shadow-sm border-l-4 ${colors.border} transition-all duration-200 hover:shadow-md hover:scale-[1.02]`}>
+            <div className="p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                    <div className="flex items-center">
+                        <span className="text-2xl mr-3">{emoji}</span>
+                        <div>
+                            <p className="font-bold text-text-primary-light dark:text-text-primary-dark">{entry.detectedMood}</p>
+                            <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">{format(new Date(entry.date), 'MMM d, h:mm a')}</p>
+                        </div>
+                    </div>
+                </div>
+                {entry.summary && <p className="text-sm text-text-primary-light dark:text-text-primary-dark italic">"{entry.summary}"</p>}
+                {entry.audioUrl && <audio src={entry.audioUrl} controls className="w-full h-9 rounded-full" />}
+                {entry.themes.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                        {entry.themes.map(theme => (
+                            <span key={theme} className="px-2 py-1 text-xs bg-purple-500/10 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 rounded-full">{theme}</span>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
 const ProgressScreen: React.FC<ProgressScreenProps> = ({ journalHistory, streak, isPremium, onUpgradeRequest }) => {
     // Filter out any potentially corrupted (null/undefined) entries from local storage.
     const cleanJournalHistory = journalHistory.filter(Boolean);
     const displayedHistory = isPremium ? cleanJournalHistory : cleanJournalHistory.slice(-7);
-
-    const moodColorMap: { [key: string]: { border: string } } = {
-        'Happy': { border: 'border-yellow-400' },
-        'Calm': { border: 'border-blue-400' },
-        'Sad': { border: 'border-indigo-400' },
-        'Angry': { border: 'border-red-400' },
-        'Tired': { border: 'border-purple-400' },
-        'Optimistic': { border: 'border-green-400' },
-        'Anxious': { border: 'border-orange-400' },
-        'Neutral': { border: 'border-gray-400' },
-    };
-
-    const JournalLogItem = ({ entry }: { entry: JournalEntry }) => {
-        const moodOption = MOOD_OPTIONS.find(option => option.mood === entry.detectedMood);
-        const emoji = moodOption ? moodOption.emoji : '📝';
-        const colors = moodColorMap[entry.detectedMood] || moodColorMap['Neutral'];
-
-        return (
-            <div className={`bg-content-light dark:bg-content-dark rounded-xl shadow-sm border-l-4 ${colors.border} transition-all duration-200 hover:shadow-md hover:scale-[1.02]`}>
-                <div className="p-4 space-y-3">
-                    <div className="flex justify-between items-start">
-                        <div className="flex items-center">
-                            <span className="text-2xl mr-3">{emoji}</span>
-                            <div>
-                                <p className="font-bold text-text-primary-light dark:text-text-primary-dark">{entry.detectedMood}</p>
-                                <p className="text-xs text-text-secondary-light dark:text-text-secondary-dark">{format(new Date(entry.date), 'MMM d, h:mm a')}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {entry.summary && <p className="text-sm text-text-primary-light dark:text-text-primary-dark italic">"{entry.summary}"</p>}
-                    {entry.audioUrl && <audio src={entry.audioUrl} controls className="w-full h-9 rounded-full" />}
-                    {entry.themes.length > 0 && (
-                        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-                            {entry.themes.map(theme => (
-                                <span key={theme} className="px-2 py-1 text-xs bg-purple-500/10 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 rounded-full">{theme}</span>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
-        );
-    };
 
     const PremiumUpsell: React.FC<{ message: string }> = ({ message }) => (
         <div className="text-center p-8 bg-bkg-light dark:bg-bkg-dark rounded-xl">
