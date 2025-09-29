@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { JournalEntry, Screen, AIAnalysisResult, DetectedMood, User } from '../../types.ts';
-import VoiceRecorder from '../shared/VoiceRecorder.tsx';
-import MoodSelector from '../shared/MoodSelector.tsx';
-import { getAIAnalysisForEntry } from '../../services/geminiService.ts';
+// FIX: Removed file extensions from imports for proper module resolution.
+import { JournalEntry, Screen, AIAnalysisResult, DetectedMood, User } from '../../types';
+import VoiceRecorder from '../shared/VoiceRecorder';
+import MoodSelector from '../shared/MoodSelector';
+import { getAIAnalysisForEntry } from '../../services/geminiService';
 
 interface HomeScreenProps {
     addJournalEntry: (entry: Omit<JournalEntry, 'date'>) => void;

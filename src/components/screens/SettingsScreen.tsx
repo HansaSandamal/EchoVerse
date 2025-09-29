@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService.ts';
-// FIX: Add file extension to import path to resolve module.
-import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types.ts';
-import { AIStatus } from '../../App.tsx';
+// FIX: Removed file extensions from imports for proper module resolution.
+import { scheduleSmartReminders, testNotification, cancelAllReminders } from '../../services/notificationService';
+import { JournalEntry, ColorTheme, ThemeMode, User } from '../../types';
+import { AIStatus } from '../../App';
 
 
 interface SettingsScreenProps {

@@ -1,6 +1,7 @@
 import React from 'react';
-import { DetectedMood } from '../../types.ts';
-import { MOOD_OPTIONS } from '../../constants.tsx';
+// FIX: Removed file extensions from imports for proper module resolution.
+import { DetectedMood } from '../../types';
+import { MOOD_OPTIONS } from '../../constants';
 
 interface MoodSelectorProps {
     selectedMood: DetectedMood | null;

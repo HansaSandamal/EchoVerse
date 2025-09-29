@@ -1,5 +1,6 @@
 import React from 'react';
-import { NavItem, Screen, Achievement, DetectedMood, MoodOption } from './types.ts';
+// FIX: Removed file extension from import for proper module resolution.
+import { NavItem, Screen, Achievement, DetectedMood, MoodOption } from './types';
 
 // Icons
 const HomeIcon = ({ className }: { className: string }) => (

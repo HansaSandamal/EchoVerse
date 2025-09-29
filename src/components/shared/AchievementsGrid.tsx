@@ -1,9 +1,8 @@
 import React from 'react';
-// FIX: Add file extension to import path to resolve module.
-import { JournalEntry } from '../../types.ts';
-// FIX: Add file extension to import path to resolve module.
-import { ACHIEVEMENTS } from '../../constants.tsx';
-import Badge from './Badge.tsx';
+// FIX: Removed file extensions from imports for proper module resolution.
+import { JournalEntry } from '../../types';
+import { ACHIEVEMENTS } from '../../constants';
+import Badge from './Badge';
 
 interface AchievementsGridProps {
     journalHistory: JournalEntry[];
