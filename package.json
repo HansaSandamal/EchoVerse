@@ -4,7 +4,7 @@
   "private": true,
   "description": "An intelligent audio diary that turns your spoken thoughts into structured, actionable insights for self-discovery.",
   "scripts": {
-    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp index.tsx dist/ && cp manifest.json dist/ && cp sw.js dist/ && cp -r assets dist/ && cp -r src dist/"
+    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp manifest.json dist/ && cp sw.js dist/ && cp -r assets dist/ && cp -r src dist/"
   },
   "dependencies": {
     "@google/genai": "^1.21.0",
