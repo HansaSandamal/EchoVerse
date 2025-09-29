@@ -69,9 +69,20 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 callback: handleGoogleLogin
             });
 
+            // The GSI library inserts an iframe, which is difficult to style directly.
+            // To ensure the Google button's width matches the full-width Apple button,
+            // we must explicitly pass the container's width to the render function.
+            const containerWidth = googleButtonContainer.offsetWidth;
+
             window.google.accounts.id.renderButton(
                 googleButtonContainer,
-                { theme: "outline", size: "large", type: 'standard', text: 'continue_with', width: '318' }
+                { 
+                    theme: "outline", 
+                    size: "large", 
+                    type: 'standard', 
+                    text: 'continue_with',
+                    width: containerWidth > 0 ? containerWidth : undefined,
+                }
             );
         } else if (googleButtonContainer) {
              // Fallback in case the Google script fails to load
@@ -98,8 +109,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
                 </div>
                 
                 <div className="w-full max-w-xs space-y-3 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
-                    {/* This div will be populated by the Google Sign-In button */}
-                    <div id="googleSignInButton" className="flex justify-center items-center h-[44px] w-full rounded-lg bg-bkg-light dark:bg-content-dark border border-gray-300 dark:border-gray-600">
+                    {/* This div will be populated by the Google Sign-In button. 
+                        It is unstyled because the GSI button provides its own styling.
+                        We set min-height to prevent layout shift while the button loads. */}
+                    <div id="googleSignInButton" className="flex justify-center items-center w-full min-h-[44px]">
                         {/* Loading placeholder to prevent layout shift */}
                         <svg className="animate-spin h-5 w-5 text-text-secondary-light dark:text-text-secondary-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
