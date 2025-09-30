@@ -2,34 +2,42 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types.ts';
 
 let ai: GoogleGenAI | null = null;
-let initError: string | null = null;
+let initError: Error | null = null;
 
 /**
- * Safely initializes the GoogleGenAI client. This function checks for the
- * existence of the 'process' object and the API key to prevent runtime
- * errors in environments where they might not be defined.
+ * Lazily initializes and returns the GoogleGenAI client.
+ * This function ensures that initialization only happens once and that any
+ * errors are stored and thrown on subsequent calls, preventing crashes.
+ * @returns {GoogleGenAI} The initialized AI client.
+ * @throws {Error} If initialization fails.
  */
-const initializeAI = () => {
-    // Per instructions, the API key must come from process.env.API_KEY.
-    // We handle the case where `process` is not defined in a browser environment
-    // or the API key is missing, to ensure the app runs without crashing.
-    if (typeof process === 'undefined' || !process.env || !process.env.API_KEY) {
-        const errorMessage = "AI service could not be initialized. API key is missing or not accessible in this environment.";
-        console.error(errorMessage);
-        initError = errorMessage;
-        return;
+function getAiClient(): GoogleGenAI {
+    // If the client is already initialized, return it.
+    if (ai) {
+        return ai;
+    }
+    // If initialization previously failed, throw the stored error.
+    if (initError) {
+        throw initError;
     }
 
     try {
+        // Per instructions, API key must come from process.env. We check if
+        // `process` exists for browser compatibility.
+        if (typeof process === 'undefined' || !process.env || !process.env.API_KEY) {
+            throw new Error("AI service could not be initialized. API key is missing or not accessible in this environment.");
+        }
+        
+        // Initialize the AI client and store it.
         ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        return ai;
     } catch (e: any) {
         console.error("GoogleGenAI initialization failed:", e.message);
-        initError = `AI service could not be initialized. Please ensure the API key is configured correctly.`;
+        // Store the error and re-throw it.
+        initError = e instanceof Error ? e : new Error('An unknown error occurred during AI initialization.');
+        throw initError;
     }
-};
-
-// Initialize the AI service when the module is loaded.
-initializeAI();
+}
 
 
 // The schema for AI analysis, used to ensure a consistent JSON output.
@@ -47,10 +55,15 @@ const analysisSchema = {
 
 /**
  * Checks if the AI service is configured and available.
- * @returns {Promise<boolean>} A promise that resolves to true if the API key is present, false otherwise.
+ * @returns {Promise<boolean>} A promise that resolves to true if the service can be initialized, false otherwise.
  */
 export const checkAIServiceAvailability = async (): Promise<boolean> => {
-    return !!ai;
+    try {
+        getAiClient();
+        return true;
+    } catch (e) {
+        return false;
+    }
 };
 
 /**
@@ -59,14 +72,14 @@ export const checkAIServiceAvailability = async (): Promise<boolean> => {
  * @returns {Promise<AIAnalysisResult>} The structured analysis from the AI.
  */
 export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisResult> => {
-    if (!ai) {
-        throw new Error(initError || "AI service is not available.");
-    }
+    // getAiClient will throw if initialization fails. The calling component's
+    // try/catch block will handle this error.
+    const client = getAiClient();
     
     const prompt = `Analyze the following journal entry. Based on the text, provide the detected mood, a brief summary, the overall sentiment, a sentiment rating from 1 to 10, and a list of key themes. Journal Entry: "${note}"`;
     
     try {
-        const response = await ai.models.generateContent({
+        const response = await client.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
@@ -90,8 +103,12 @@ export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisRes
  * @returns {Promise<string>} A string containing the AI-generated insight.
  */
 export const getAIConnections = async (history: JournalEntry[]): Promise<string> => {
-    if (!ai) {
-        return initError || "The AI insight service is currently unavailable.";
+    let client: GoogleGenAI;
+    try {
+        client = getAiClient();
+    } catch (error: any) {
+        console.error("AI service not available for generating connections:", error);
+        return error.message || "The AI insight service is currently unavailable.";
     }
 
     if (history.length < 3) {
@@ -102,7 +119,7 @@ export const getAIConnections = async (history: JournalEntry[]): Promise<string>
     const prompt = `You are a compassionate self-reflection assistant. Analyze the journal entries. Identify one interesting pattern or connection. Present this insight gently to the user (e.g., "I noticed that..."). Keep it concise (3-4 sentences). History:\n${historySummary}`;
 
     try {
-        const response = await ai.models.generateContent({
+        const response = await client.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
