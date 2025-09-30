@@ -11,7 +11,7 @@ import PremiumModal from './components/shared/PremiumModal.tsx';
 import ConfirmationModal from './components/shared/ConfirmationModal.tsx';
 import { NAV_ITEMS } from './constants.tsx';
 import { isToday, isYesterday, differenceInCalendarDays } from 'date-fns';
-import { checkAIServiceAvailability } from './services/geminiService.ts';
+import { getAIStatus } from './services/geminiService.ts';
 
 // Custom hook for persisting state to localStorage
 const useLocalStorage = <T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] => {
@@ -51,8 +51,8 @@ const App = () => {
 
     // Check AI Service availability on startup
     useEffect(() => {
-        checkAIServiceAvailability().then(isAvailable => {
-            setAiStatus(isAvailable ? 'available' : 'unavailable');
+        getAIStatus().then(status => {
+            setAiStatus(status);
         });
     }, []);
 

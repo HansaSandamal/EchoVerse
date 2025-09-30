@@ -1,43 +1,38 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types.ts';
+import { JournalEntry, DetectedMood, AIAnalysisResult, AIStatus } from '../types.ts';
 
 let ai: GoogleGenAI | null = null;
-let initError: Error | null = null;
+let serviceStatus: AIStatus = 'checking';
 
-/**
- * Lazily initializes and returns the GoogleGenAI client.
- * This function ensures that initialization only happens once and that any
- * errors are stored and thrown on subsequent calls, preventing crashes.
- * @returns {GoogleGenAI} The initialized AI client.
- * @throws {Error} If initialization fails.
- */
-function getAiClient(): GoogleGenAI {
-    // If the client is already initialized, return it.
-    if (ai) {
-        return ai;
-    }
-    // If initialization previously failed, throw the stored error.
-    if (initError) {
-        throw initError;
-    }
+// Singleton initialization logic
+const initializeAI = async () => {
+    if (serviceStatus !== 'checking') return;
 
     try {
-        // Per instructions, API key must come from process.env. We check if
-        // `process` exists for browser compatibility.
         if (typeof process === 'undefined' || !process.env || !process.env.API_KEY) {
-            throw new Error("AI service could not be initialized. API key is missing or not accessible in this environment.");
+            console.warn("API_KEY not found. EchoVerse is running in Demo Mode.");
+            serviceStatus = 'demo';
+            return;
         }
-        
-        // Initialize the AI client and store it.
         ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        return ai;
-    } catch (e: any) {
-        console.error("GoogleGenAI initialization failed:", e.message);
-        // Store the error and re-throw it.
-        initError = e instanceof Error ? e : new Error('An unknown error occurred during AI initialization.');
-        throw initError;
+        serviceStatus = 'available';
+    } catch (e) {
+        console.error("GoogleGenAI initialization failed:", e);
+        serviceStatus = 'unavailable';
     }
-}
+};
+
+const initPromise = initializeAI();
+
+export const getAIStatus = async (): Promise<AIStatus> => {
+    await initPromise;
+    return serviceStatus;
+};
+
+export const getAiClient = async (): Promise<GoogleGenAI | null> => {
+    await initPromise;
+    return ai;
+};
 
 
 // The schema for AI analysis, used to ensure a consistent JSON output.
@@ -54,32 +49,38 @@ const analysisSchema = {
 };
 
 /**
- * Checks if the AI service is configured and available.
- * @returns {Promise<boolean>} A promise that resolves to true if the service can be initialized, false otherwise.
- */
-export const checkAIServiceAvailability = async (): Promise<boolean> => {
-    try {
-        getAiClient();
-        return true;
-    } catch (e) {
-        return false;
-    }
-};
-
-/**
  * Sends a journal entry note to the Gemini API for analysis.
+ * In Demo Mode, returns mock data.
  * @param {string} note The user's journal entry text.
  * @returns {Promise<AIAnalysisResult>} The structured analysis from the AI.
  */
 export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisResult> => {
-    // getAiClient will throw if initialization fails. The calling component's
-    // try/catch block will handle this error.
-    const client = getAiClient();
+    await initPromise;
+
+    if (serviceStatus === 'demo') {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                const moods = Object.values(DetectedMood);
+                const randomMood = moods[Math.floor(Math.random() * moods.length)];
+                resolve({
+                    detectedMood: randomMood,
+                    summary: "This is a sample AI analysis from Demo Mode. Configure your API key for real insights.",
+                    sentiment: "Neutral",
+                    rating: Math.floor(Math.random() * 4) + 4, // 4-7
+                    themes: ["demo mode", "sample analysis"]
+                });
+            }, 1200);
+        });
+    }
+
+    if (serviceStatus !== 'available' || !ai) {
+        throw new Error("AI service is not available.");
+    }
     
     const prompt = `Analyze the following journal entry. Based on the text, provide the detected mood, a brief summary, the overall sentiment, a sentiment rating from 1 to 10, and a list of key themes. Journal Entry: "${note}"`;
     
     try {
-        const response = await client.models.generateContent({
+        const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
@@ -99,16 +100,19 @@ export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisRes
 
 /**
  * Sends journal history to the AI to find patterns and connections.
+ * In Demo Mode, returns a pre-written insight.
  * @param {JournalEntry[]} history A list of past journal entries.
  * @returns {Promise<string>} A string containing the AI-generated insight.
  */
 export const getAIConnections = async (history: JournalEntry[]): Promise<string> => {
-    let client: GoogleGenAI;
-    try {
-        client = getAiClient();
-    } catch (error: any) {
-        console.error("AI service not available for generating connections:", error);
-        return error.message || "The AI insight service is currently unavailable.";
+    await initPromise;
+
+    if (serviceStatus === 'demo') {
+        return Promise.resolve("This is a sample insight from Demo Mode. Configure your API key to find real connections in your journal entries!");
+    }
+
+    if (serviceStatus !== 'available' || !ai) {
+        return "The AI insight service is currently unavailable.";
     }
 
     if (history.length < 3) {
@@ -119,7 +123,7 @@ export const getAIConnections = async (history: JournalEntry[]): Promise<string>
     const prompt = `You are a compassionate self-reflection assistant. Analyze the journal entries. Identify one interesting pattern or connection. Present this insight gently to the user (e.g., "I noticed that..."). Keep it concise (3-4 sentences). History:\n${historySummary}`;
 
     try {
-        const response = await client.models.generateContent({
+        const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {

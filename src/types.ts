@@ -2,7 +2,7 @@
 // It is intentionally kept free of direct 'react' imports to prevent
 // potential runtime errors in the in-browser transpilation environment.
 
-export type AIStatus = 'checking' | 'available' | 'unavailable';
+export type AIStatus = 'checking' | 'available' | 'unavailable' | 'demo';
 
 export enum Screen {
     Login = 'login',

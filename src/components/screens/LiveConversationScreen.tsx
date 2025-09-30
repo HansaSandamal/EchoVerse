@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { GoogleGenAI, LiveServerMessage, Modality, Blob } from '@google/genai';
+import { getAIStatus, getAiClient } from '../../services/geminiService.ts';
 
 // --- Audio Helper Functions (as per Gemini API guidelines) ---
 
@@ -65,10 +66,10 @@ type ConversationTurn = {
     isFinal: boolean;
 };
 
-type Status = 'idle' | 'connecting' | 'active' | 'error';
+type Status = 'idle' | 'checking' | 'connecting' | 'active' | 'error' | 'unavailable';
 
 const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
-    const [status, setStatus] = useState<Status>('idle');
+    const [status, setStatus] = useState<Status>('checking');
     const [transcript, setTranscript] = useState<ConversationTurn[]>([]);
     const [errorMessage, setErrorMessage] = useState<string>('');
     
@@ -93,8 +94,12 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
         scriptProcessorRef.current?.disconnect();
         scriptProcessorRef.current = null;
         
-        inputAudioContextRef.current?.close();
-        outputAudioContextRef.current?.close();
+        if (inputAudioContextRef.current?.state !== 'closed') {
+           inputAudioContextRef.current?.close();
+        }
+        if (outputAudioContextRef.current?.state !== 'closed') {
+           outputAudioContextRef.current?.close();
+        }
 
         sourcesRef.current.forEach(source => source.stop());
         sourcesRef.current.clear();
@@ -103,6 +108,21 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
 
     useEffect(() => {
         isMountedRef.current = true;
+
+        getAIStatus().then(aiStatus => {
+            if (!isMountedRef.current) return;
+            if (aiStatus !== 'available') {
+                setStatus('unavailable');
+                setErrorMessage(
+                    aiStatus === 'demo'
+                    ? 'Live Conversation is not available in Demo Mode. Please configure a valid API key in your environment.'
+                    : 'The AI Service is currently unavailable. Please check your configuration and try again.'
+                );
+            } else {
+                setStatus('idle');
+            }
+        });
+
         return () => {
             isMountedRef.current = false;
             cleanup();
@@ -116,24 +136,10 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
         setErrorMessage('');
         turnCounter.current = 0;
         
-        let ai: GoogleGenAI;
-        // Safely check for the API key to prevent runtime errors in deployed environments.
-        if (typeof process === 'undefined' || !process.env || !process.env.API_KEY) {
-            const errorMsg = "AI Service is unavailable. Please ensure the API Key is configured.";
-            console.error("Live Conversation:", errorMsg);
-            if (isMountedRef.current) {
-                setErrorMessage(errorMsg);
-                setStatus('error');
-            }
-            return;
-        }
-        
-        try {
-            ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-        } catch (e: any) {
-            console.error("Live Conversation: GoogleGenAI initialization failed.", e.message);
-            if (isMountedRef.current) {
-                setErrorMessage("AI Service is unavailable. Please ensure the API Key is configured.");
+        const ai = await getAiClient();
+        if (!ai) {
+             if (isMountedRef.current) {
+                setErrorMessage("Failed to initialize the AI client. The service may be unavailable.");
                 setStatus('error');
             }
             return;
@@ -240,6 +246,41 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
         }
     };
 
+    const renderStatusArea = () => {
+        switch (status) {
+            case 'idle':
+                return (
+                     <button onClick={startConversation} className="px-8 py-3 bg-accent-light dark:bg-accent-dark text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105 active:animate-button-press">
+                        Start Conversation
+                    </button>
+                );
+            case 'checking':
+            case 'connecting':
+                return (
+                    <div className="flex flex-col items-center">
+                        <svg className="animate-spin h-8 w-8 text-accent-light dark:text-accent-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                        <p className="mt-2 text-text-secondary-light dark:text-text-secondary-dark">{status === 'checking' ? 'Checking service...' : 'Connecting...'}</p>
+                    </div>
+                );
+            case 'active':
+                return (
+                    <button onClick={endConversation} className="px-8 py-3 bg-red-600 text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105 active:animate-button-press">
+                        End Conversation
+                    </button>
+                );
+            case 'unavailable':
+            case 'error':
+                 return (
+                     <div className="text-center">
+                        <p className="text-red-500 font-semibold">{errorMessage}</p>
+                        <button onClick={onBack} className="mt-4 px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 active:animate-button-press transition-colors">Go Back</button>
+                    </div>
+                 );
+            default:
+                return null;
+        }
+    }
+
     return (
         <div className="flex flex-col h-[calc(100vh-2rem)] animate-fade-in-up">
             <div className="flex items-center justify-between pb-4">
@@ -261,32 +302,12 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
                     ))}
                      {transcript.length === 0 && status === 'active' && <p className="text-center text-text-secondary-light dark:text-text-secondary-dark">Listening...</p>}
                      {transcript.length === 0 && status === 'idle' && <p className="text-center text-text-secondary-light dark:text-text-secondary-dark">Press "Start Conversation" to begin.</p>}
+                     {transcript.length === 0 && status === 'checking' && <p className="text-center text-text-secondary-light dark:text-text-secondary-dark">Initializing...</p>}
                 </div>
             </div>
 
             <div className="flex flex-col items-center justify-center p-4">
-                {status === 'idle' && (
-                     <button onClick={startConversation} className="px-8 py-3 bg-accent-light dark:bg-accent-dark text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105 active:animate-button-press">
-                        Start Conversation
-                    </button>
-                )}
-                 {status === 'connecting' && (
-                    <div className="flex flex-col items-center">
-                        <svg className="animate-spin h-8 w-8 text-accent-light dark:text-accent-dark" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                        <p className="mt-2 text-text-secondary-light dark:text-text-secondary-dark">Connecting...</p>
-                    </div>
-                 )}
-                 {status === 'active' && (
-                      <button onClick={endConversation} className="px-8 py-3 bg-red-600 text-white font-bold rounded-full shadow-lg transition-transform transform hover:scale-105 active:animate-button-press">
-                        End Conversation
-                    </button>
-                 )}
-                 {status === 'error' && (
-                     <div className="text-center">
-                        <p className="text-red-500 font-semibold">{errorMessage}</p>
-                        <button onClick={onBack} className="mt-4 px-6 py-2 border border-gray-300 dark:border-gray-600 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 active:animate-button-press transition-colors">Go Back</button>
-                    </div>
-                 )}
+               {renderStatusArea()}
             </div>
         </div>
     );
