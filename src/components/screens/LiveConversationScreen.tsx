@@ -116,16 +116,28 @@ const LiveConversationScreen = ({ onBack }: LiveConversationScreenProps) => {
         setErrorMessage('');
         turnCounter.current = 0;
         
-        const liveApiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
-        if (!liveApiKey) {
+        let ai: GoogleGenAI;
+        // Safely check for the API key to prevent runtime errors in deployed environments.
+        if (typeof process === 'undefined' || !process.env || !process.env.API_KEY) {
+            const errorMsg = "AI Service is unavailable. Please ensure the API Key is configured.";
+            console.error("Live Conversation:", errorMsg);
+            if (isMountedRef.current) {
+                setErrorMessage(errorMsg);
+                setStatus('error');
+            }
+            return;
+        }
+        
+        try {
+            ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        } catch (e: any) {
+            console.error("Live Conversation: GoogleGenAI initialization failed.", e.message);
             if (isMountedRef.current) {
                 setErrorMessage("AI Service is unavailable. Please ensure the API Key is configured.");
                 setStatus('error');
             }
             return;
         }
-
-        const ai = new GoogleGenAI({ apiKey: liveApiKey });
 
         try {
             streamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });

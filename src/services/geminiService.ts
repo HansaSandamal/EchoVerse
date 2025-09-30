@@ -1,9 +1,36 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { JournalEntry, DetectedMood, AIAnalysisResult } from '../types.ts';
 
-// Per instructions, assume process.env.API_KEY is available in the execution environment.
-const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
-const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
+let ai: GoogleGenAI | null = null;
+let initError: string | null = null;
+
+/**
+ * Safely initializes the GoogleGenAI client. This function checks for the
+ * existence of the 'process' object and the API key to prevent runtime
+ * errors in environments where they might not be defined.
+ */
+const initializeAI = () => {
+    // Per instructions, the API key must come from process.env.API_KEY.
+    // We handle the case where `process` is not defined in a browser environment
+    // or the API key is missing, to ensure the app runs without crashing.
+    if (typeof process === 'undefined' || !process.env || !process.env.API_KEY) {
+        const errorMessage = "AI service could not be initialized. API key is missing or not accessible in this environment.";
+        console.error(errorMessage);
+        initError = errorMessage;
+        return;
+    }
+
+    try {
+        ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    } catch (e: any) {
+        console.error("GoogleGenAI initialization failed:", e.message);
+        initError = `AI service could not be initialized. Please ensure the API key is configured correctly.`;
+    }
+};
+
+// Initialize the AI service when the module is loaded.
+initializeAI();
+
 
 // The schema for AI analysis, used to ensure a consistent JSON output.
 const analysisSchema = {
@@ -33,7 +60,7 @@ export const checkAIServiceAvailability = async (): Promise<boolean> => {
  */
 export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisResult> => {
     if (!ai) {
-        throw new Error("AI service is not available. API key may be missing.");
+        throw new Error(initError || "AI service is not available.");
     }
     
     const prompt = `Analyze the following journal entry. Based on the text, provide the detected mood, a brief summary, the overall sentiment, a sentiment rating from 1 to 10, and a list of key themes. Journal Entry: "${note}"`;
@@ -64,7 +91,7 @@ export const getAIAnalysisForEntry = async (note: string): Promise<AIAnalysisRes
  */
 export const getAIConnections = async (history: JournalEntry[]): Promise<string> => {
     if (!ai) {
-        return "The AI insight service is currently unavailable. This is likely due to a missing API key in the application's configuration.";
+        return initError || "The AI insight service is currently unavailable.";
     }
 
     if (history.length < 3) {
